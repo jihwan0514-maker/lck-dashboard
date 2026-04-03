@@ -548,26 +548,34 @@ function renderBetting(){
   if(!bets.length){
     tb.innerHTML='<tr><td colspan="9" class="empty">아직 베팅 기록이 없습니다</td></tr>';
   } else {
-    // ✅ 수정: b.id (DB 실제 id)를 onclick에 전달 — 인덱스 계산 불필요
+    // UUID를 data-id 속성으로 저장 — onclick 인라인에 넣으면 UUID가 깨짐
     tb.innerHTML=[...bets].reverse().map(b=>{
       const pb=b.pl==='PrizePicks'?'bp':'bk';
       const pc=b.pnl>0?'#22c472':b.pnl<0?'#ef4444':'var(--text2)';
-      return`<tr>
+      return`<tr data-id="${b.id}">
         <td style="color:var(--text2);font-size:11px">${b.d}</td>
         <td><span class="badge ${pb}">${b.pl}</span></td>
         <td style="font-weight:500;font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.pk}</td>
         <td style="color:var(--text2);font-size:11px">${b.dr}</td>
         <td style="font-size:11px">${b.bt.toFixed(2)}</td>
-        <td><input type="number" value="${b.rt.toFixed(2)}" step="0.01" onchange="updateRet(${b.id},this.value)"/></td>
+        <td><input type="number" class="ret-input" value="${b.rt.toFixed(2)}" step="0.01"/></td>
         <td style="color:${pc};font-weight:700;font-size:11px">${fp(b.pnl)}</td>
-        <td><select onchange="updateRes(${b.id},this.value)">
+        <td><select class="res-select">
           <option value="진행중" ${b.rs==='진행중'?'selected':''}>⏳</option>
           <option value="성공" ${b.rs==='성공'?'selected':''}>✅</option>
           <option value="실패" ${b.rs==='실패'?'selected':''}>❌</option>
         </select></td>
-        <td><button class="del-btn" onclick="delBet(${b.id})">✕</button></td>
+        <td><button class="del-btn">✕</button></td>
       </tr>`;
     }).join('');
+
+    // 이벤트 위임: data-id로 UUID를 안전하게 읽음
+    tb.querySelectorAll('tr[data-id]').forEach(row=>{
+      const id=row.dataset.id;
+      row.querySelector('.del-btn').addEventListener('click',()=>delBet(id));
+      row.querySelector('.res-select').addEventListener('change',function(){updateRes(id,this.value);});
+      row.querySelector('.ret-input').addEventListener('change',function(){updateRet(id,this.value);});
+    });
   }
 
   const {grid,tick}=gc();
