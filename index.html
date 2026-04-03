@@ -11,31 +11,15 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23111'/><text y='26' x='4' font-size='22'>🏆</text></svg>">
 <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23111111'/><g transform='translate(90,90)'><path d='M0-52 C-28-52-50-30-50-2 C-50 18-38 34-20 42 L-20 54 L-30 54 L-30 64 L30 64 L30 54 L20 54 L20 42 C38 34 50 18 50-2 C50-30 28-52 0-52Z' fill='%23ffffff'/><path d='M-50-2 L-68-2 L-68 20 C-68 36-60 44-50 44 L-40 44 C-44 36-46 24-46-2Z' fill='%23cccccc'/><path d='M50-2 L68-2 L68 20 C68 36 60 44 50 44 L40 44 C44 36 46 24 46-2Z' fill='%23cccccc'/><rect x='-30' y='64' width='60' height='10' rx='5' fill='%23ffffff'/></g></svg>">
 <meta name="theme-color" content="#ffffff" id="theme-color-meta">
-<link rel="manifest" href="data:application/json,{%22name%22:%22Tracker%22,%22short_name%22:%22Tracker%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23f7f8fa%22,%22theme_color%22:%22%23ffffff%22}">
 <title>Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#f2f3f7;--bg2:#ffffff;--bg3:#f0f1f5;--bg4:#e8eaf0;
-  --text:#0f0f1a;--text2:#8888a0;--text3:#5f5f78;
-  --border:rgba(0,0,0,0.06);--border2:rgba(0,0,0,0.1);
-  --shadow:0 2px 12px rgba(0,0,0,0.06),0 1px 3px rgba(0,0,0,0.04);
-  --shadow2:0 8px 32px rgba(0,0,0,0.08),0 2px 8px rgba(0,0,0,0.04);
-  --radius:16px;--radius2:12px;--radius3:8px;
-}
-.dark{
-  --bg:#0c0c14;--bg2:#16161f;--bg3:#1e1e28;--bg4:#252532;
-  --text:#f0f0f8;--text2:#55556a;--text3:#7878a0;
-  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
-  --shadow:0 2px 12px rgba(0,0,0,0.3),0 1px 3px rgba(0,0,0,0.2);
-  --shadow2:0 8px 32px rgba(0,0,0,0.4),0 2px 8px rgba(0,0,0,0.3);
-}
+:root{--bg:#f2f3f7;--bg2:#ffffff;--bg3:#f0f1f5;--bg4:#e8eaf0;--text:#0f0f1a;--text2:#8888a0;--text3:#5f5f78;--border:rgba(0,0,0,0.06);--border2:rgba(0,0,0,0.1);--shadow:0 2px 12px rgba(0,0,0,0.06),0 1px 3px rgba(0,0,0,0.04);--radius:16px;--radius2:12px;--radius3:8px;}
+.dark{--bg:#0c0c14;--bg2:#16161f;--bg3:#1e1e28;--bg4:#252532;--text:#f0f0f8;--text2:#55556a;--text3:#7878a0;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);--shadow:0 2px 12px rgba(0,0,0,0.3),0 1px 3px rgba(0,0,0,0.2);}
 body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh;transition:background 0.4s,color 0.4s;overscroll-behavior:none}
 .app{max-width:1400px;margin:0 auto;padding:1.25rem 2rem 5rem}
-
-/* 상단바 */
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
 .topbar-left{display:flex;align-items:center;gap:10px}
 .app-icon{width:36px;height:36px;background:#111;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.25);flex-shrink:0}
@@ -44,27 +28,20 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 .app-sub{font-size:11px;color:var(--text2);margin-top:1px}
 .theme-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif;transition:all 0.2s;box-shadow:var(--shadow)}
 .theme-btn:hover{transform:scale(1.03)}
-
-/* 탭 */
 .tabs{display:flex;gap:3px;margin-bottom:1.25rem;background:var(--bg3);padding:4px;border-radius:14px}
 .tab{flex:1;padding:8px 4px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--text2);transition:all 0.25s;font-family:'Inter',sans-serif;text-align:center;letter-spacing:0.2px}
 .tab.active{background:var(--bg2);color:var(--text);box-shadow:var(--shadow)}
 .page{display:none}.page.active{display:block}
-
-/* 카드 */
 .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1rem}
 @media(min-width:600px){.cards{grid-template-columns:repeat(4,1fr);gap:14px}}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:transform 0.2s,box-shadow 0.2s}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:transform 0.2s}
 .card:active{transform:scale(0.98)}
 .card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius) var(--radius) 0 0}
 .card-label{font-size:10px;color:var(--text2);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px}
 .card-value{font-size:22px;font-weight:700;letter-spacing:-0.8px;line-height:1}
 .card-sub{font-size:10px;color:var(--text2);margin-top:5px}
 .cv-default{color:var(--text)}.cv-green{color:#22c472}.cv-red{color:#ef4444}.cv-blue{color:#3b82f6}.cv-purple{color:#8b5cf6}.cv-amber{color:#f59e0b}
-
-/* 섹션 */
 .section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
-.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .section-title{font-size:10px;color:var(--text2);font-weight:700;text-transform:uppercase;letter-spacing:0.7px}
 .two-col{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
 @media(min-width:600px){.two-col{grid-template-columns:1fr 1fr;gap:16px}}
@@ -72,8 +49,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 .legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px;font-size:11px;color:var(--text2)}
 .legend span{display:flex;align-items:center;gap:5px;font-weight:500}
 .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
-
-/* 폼 */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 @media(min-width:600px){.form-grid{grid-template-columns:repeat(4,1fr)}}
 .form-grid-3{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:10px}
@@ -87,36 +62,25 @@ select option{background:var(--bg2);color:var(--text)}
 textarea{resize:vertical;min-height:80px;line-height:1.6}
 .btn{border:none;border-radius:var(--radius3);padding:11px 16px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:all 0.2s;width:100%;letter-spacing:0.2px}
 .btn-primary{background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;box-shadow:0 4px 12px rgba(59,130,246,0.3)}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(59,130,246,0.4)}
+.btn-primary:hover{transform:translateY(-1px)}
 .btn-primary:active{transform:translateY(0)}
-.btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
-.btn-secondary:hover{background:var(--bg4)}
-.btn-sm{padding:7px 12px;font-size:11px;border-radius:6px;width:auto}
-
-/* 테이블 */
 .table-wrap{overflow-x:auto;border-radius:var(--radius2);margin:-4px}
 table{width:100%;border-collapse:collapse;font-size:12px;min-width:500px}
 th{color:var(--text2);font-weight:600;padding:8px 10px;text-align:left;border-bottom:1.5px solid var(--border2);font-size:10px;text-transform:uppercase;letter-spacing:0.6px}
 td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr{transition:background 0.15s}
 tr:hover td{background:var(--bg3)}
-.badge{display:inline-flex;align-items:center;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:600;letter-spacing:0.3px}
-.bp{background:rgba(59,130,246,0.12);color:#3b82f6}
-.bk{background:rgba(139,92,246,0.12);color:#8b5cf6}
-.bw{background:rgba(34,196,114,0.12);color:#22c472}
-.bl{background:rgba(239,68,68,0.12);color:#ef4444}
-.bn{background:rgba(245,158,11,0.12);color:#f59e0b}
-td select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 7px;font-size:11px;color:var(--text);width:auto;cursor:pointer;font-weight:500}
+.badge{display:inline-flex;align-items:center;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:600}
+.bp{background:rgba(59,130,246,0.12);color:#3b82f6}.bk{background:rgba(139,92,246,0.12);color:#8b5cf6}
+.bw{background:rgba(34,196,114,0.12);color:#22c472}.bl{background:rgba(239,68,68,0.12);color:#ef4444}
+td select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 7px;font-size:11px;color:var(--text);width:auto;cursor:pointer}
 td input[type=number]{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 7px;font-size:11px;width:70px;color:var(--text)}
 .del-btn{background:none;border:none;cursor:pointer;color:var(--text2);font-size:13px;padding:3px 6px;border-radius:5px;transition:all 0.15s}
 .del-btn:hover{color:#ef4444;background:rgba(239,68,68,0.1)}
 .empty{color:var(--text2);text-align:center;padding:28px;font-size:12px;font-weight:500}
-
-/* 팀 카드 */
 .team-grid{display:grid;grid-template-columns:1fr;gap:12px}
 @media(min-width:600px){.team-grid{grid-template-columns:repeat(2,1fr)}}
-.team-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);transition:transform 0.2s,box-shadow 0.2s;overflow:hidden;position:relative}
+.team-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
 .team-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
 .tier1::before{background:linear-gradient(90deg,#3b82f6,#8b5cf6)}
 .tier2::before{background:linear-gradient(90deg,#f59e0b,#f97316)}
@@ -143,11 +107,8 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
 .filter-btn.active{background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(59,130,246,0.3)}
 .period-btn{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:'Inter',sans-serif;transition:all 0.2s}
 .period-btn.active{background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;border-color:transparent}
-
-/* 메모/일기 */
 .memo-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
-.memo-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:14px;box-shadow:var(--shadow);transition:transform 0.15s}
-.memo-item:active{transform:scale(0.99)}
+.memo-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:14px;box-shadow:var(--shadow)}
 .memo-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .memo-date{font-size:11px;font-weight:600;color:var(--text2)}
 .memo-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px}
@@ -156,17 +117,10 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
 .tag-neutral{background:var(--bg3);color:var(--text2)}
 .memo-text{font-size:13px;color:var(--text);line-height:1.6}
 .memo-pnl{font-size:12px;font-weight:700;margin-top:6px}
-
-/* 예산 */
 .budget-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px}
 @media(min-width:600px){.budget-grid{grid-template-columns:repeat(3,1fr)}}
 .rule-box{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius2);padding:14px;font-size:12px;color:var(--text3);line-height:1.8}
 .rule-box strong{color:#f59e0b}
-
-/* 구분선 */
-.divider{height:1px;background:var(--border2);margin:14px 0}
-
-/* 하단 여백 */
 .bottom-safe{height:env(safe-area-inset-bottom,0px)}
 </style>
 </head>
@@ -174,7 +128,6 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
 <div class="app">
   <div class="topbar">
     <div class="topbar-left">
-      <!-- 검정 배경 흰색 트로피 SVG 아이콘 -->
       <div class="app-icon">
         <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M11 2C7.5 2 5 4.5 5 7.5C5 10 6.5 12 8.8 12.8L8.8 14.5L7 14.5L7 16L15 16L15 14.5L13.2 14.5L13.2 12.8C15.5 12 17 10 17 7.5C17 4.5 14.5 2 11 2Z" fill="white"/>
@@ -207,7 +160,7 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
       <div class="card"><div class="card-accent" style="background:linear-gradient(90deg,#8b5cf6,#a855f7)"></div><div class="card-label">총 베팅</div><div class="card-value cv-purple" id="c-total">0회</div><div class="card-sub" id="c-totalsub"></div></div>
     </div>
     <div class="section">
-      <div class="section-header"><div class="section-title">베팅 추가</div></div>
+      <div class="section-title" style="margin-bottom:12px">베팅 추가</div>
       <div class="form-grid">
         <input type="date" id="i-date"/>
         <select id="i-plat"><option value="PrizePicks">PrizePicks</option><option value="Kalshi">Kalshi</option></select>
@@ -221,24 +174,14 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
         <button class="btn btn-primary" onclick="addBet()">+ 추가</button>
       </div>
     </div>
-    <div class="section">
-      <div class="section-header"><div class="section-title">💵 입금 (Deposit)</div></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:10px">
-        <input type="date" id="d-date"/>
-        <div class="input-wrap"><span class="prefix">$</span><input type="number" id="d-amt" placeholder="입금액" step="0.01"/></div>
-        <input type="text" id="d-note" placeholder="메모 (예: PrizePicks 충전)"/>
-        <button class="btn btn-primary" style="width:auto;padding:10px 18px" onclick="addDeposit()">+ 입금</button>
-      </div>
-      <div id="deposit-list"></div>
-    </div>
     <div class="two-col">
       <div class="section">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <div class="section-title">날짜별 손익</div>
           <div style="display:flex;gap:4px">
-            <button class="period-btn active" data-period="day" onclick="setPeriod('day',this)">1일</button>
-            <button class="period-btn" data-period="week" onclick="setPeriod('week',this)">1주</button>
-            <button class="period-btn" data-period="month" onclick="setPeriod('month',this)">1달</button>
+            <button class="period-btn active" onclick="setPeriod('day',this)">1일</button>
+            <button class="period-btn" onclick="setPeriod('week',this)">1주</button>
+            <button class="period-btn" onclick="setPeriod('month',this)">1달</button>
           </div>
         </div>
         <div class="chart-wrap" style="height:160px"><canvas id="ch-daily"></canvas></div>
@@ -309,17 +252,13 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
     <div class="team-grid" id="team-grid"></div>
   </div>
 
-  <!-- 메모/기록 -->
+  <!-- 메모 -->
   <div class="page" id="page-memo">
     <div class="section">
       <div class="section-title" style="margin-bottom:12px">오늘 기록 추가</div>
       <div class="form-grid" style="margin-bottom:8px">
         <input type="date" id="m-date"/>
-        <select id="m-tag">
-          <option value="neutral">📝 일반</option>
-          <option value="win">✅ 수익 날</option>
-          <option value="lose">❌ 손실 날</option>
-        </select>
+        <select id="m-tag"><option value="neutral">📝 일반</option><option value="win">✅ 수익 날</option><option value="lose">❌ 손실 날</option></select>
         <div class="input-wrap"><span class="prefix">$</span><input type="number" id="m-pnl" placeholder="오늘 손익" step="0.01"/></div>
         <div></div>
       </div>
@@ -331,123 +270,72 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
       <div class="empty" style="background:var(--bg2);border-radius:var(--radius);padding:32px;border:1px solid var(--border)">아직 기록이 없어요 ✏️</div>
     </div>
   </div>
-
   <div class="bottom-safe"></div>
 </div>
 
 <script>
 const SB_URL='https://frewhoybgoclieoigpxy.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZXdob3liZ29jbGllb2lncHh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxOTE4NDQsImV4cCI6MjA5MDc2Nzg0NH0.dPPUX0vCqVbAcGHfN2yFZFvDwl9buRqkmyAJ5ggR-1M';
-const sb=(table)=>`${SB_URL}/rest/v1/${table}`;
+const sb=t=>`${SB_URL}/rest/v1/${t}`;
 const headers={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`};
+async function dbGet(t,s='*'){const r=await fetch(`${sb(t)}?select=${s}&order=created_at.asc`,{headers});return r.json();}
+async function dbInsert(t,d){await fetch(sb(t),{method:'POST',headers:{...headers,'Prefer':'return=minimal'},body:JSON.stringify(d)});}
+async function dbUpdate(t,id,d){await fetch(`${sb(t)}?id=eq.${id}`,{method:'PATCH',headers:{...headers,'Prefer':'return=minimal'},body:JSON.stringify(d)});}
+async function dbDelete(t,id){await fetch(`${sb(t)}?id=eq.${id}`,{method:'DELETE',headers});}
 
-async function dbGet(table,select='*'){
-  const r=await fetch(`${sb(table)}?select=${select}&order=created_at.asc`,{headers});
-  return r.json();
-}
-async function dbInsert(table,data){
-  await fetch(sb(table),{method:'POST',headers:{...headers,'Prefer':'return=minimal'},body:JSON.stringify(data)});
-}
-async function dbUpdate(table,id,data){
-  await fetch(`${sb(table)}?id=eq.${id}`,{method:'PATCH',headers:{...headers,'Prefer':'return=minimal'},body:JSON.stringify(data)});
-}
-async function dbDelete(table,id){
-  await fetch(`${sb(table)}?id=eq.${id}`,{method:'DELETE',headers});
-}
-
-let bets=[];
-let budget={living:551,gamble:79,refund:49,id:null};
-let memos=[];
-let deposits=JSON.parse(localStorage.getItem('lck_deposits')||'[{"id":"init","amt":20,"d":"2026-01-01","note":"초기 자금"}]');
-let isDark=localStorage.getItem('lck_theme')==='dark';
-let cD,cF,cP,cW,cB,cG;
-function totalDeposit(){return deposits.reduce((s,d)=>s+d.amt,0);}
-function saveDeposits(){localStorage.setItem('lck_deposits',JSON.stringify(deposits));}
-
-async function addDeposit(){
-  const d=document.getElementById('d-date').value;
-  const amt=parseFloat(document.getElementById('d-amt').value);
-  const note=document.getElementById('d-note').value.trim()||'입금';
-  if(!d||isNaN(amt)||amt<=0)return;
-  budget.gamble=Math.max(0,+(budget.gamble-amt).toFixed(2));
-  localStorage.setItem('lck_budget',JSON.stringify(budget));
-  // DB에 저장
-  await dbInsert('deposits',{amt,d,note});
-  // DB에서 다시 불러와 id 포함
-  const dep=await dbGet('deposits');
-  if(dep&&dep.length>0){
-    deposits=dep.map(x=>({id:x.id,amt:parseFloat(x.amt),d:x.d,note:x.note}));
-    saveDeposits();
-  }
-  document.getElementById('d-amt').value='';
-  document.getElementById('d-note').value='';
-  renderBetting();
-  if(document.getElementById('page-budget').classList.contains('active'))renderBudget();
-}
-
-async function delDeposit(id){
-  const dep=deposits.find(d=>d.id===id);
-  if(!dep||!confirm('입금 기록 삭제?'))return;
-  budget.gamble=+(budget.gamble+dep.amt).toFixed(2);
-  localStorage.setItem('lck_budget',JSON.stringify(budget));
-  await dbDelete('deposits',id);
-  const fetched=await dbGet('deposits');
-  if(fetched&&fetched.length>0){
-    deposits=fetched.map(x=>({id:x.id,amt:parseFloat(x.amt),d:x.d,note:x.note}));
-  } else {
-    deposits=deposits.filter(d=>d.id!==id);
-  }
-  saveDeposits();
-  renderBetting();
-}
-
-function renderDeposits(){
-  const el=document.getElementById('deposit-list');
-  const rows=deposits.map(dep=>`
-    <div style="display:flex;align-items:center;gap:8px;background:var(--bg3);border-radius:8px;padding:7px 10px;font-size:12px">
-      <span style="color:var(--text2);min-width:80px">${dep.d}</span>
-      <span style="font-weight:700;color:#22c472;min-width:60px">+$${dep.amt.toFixed(2)}</span>
-      <span style="color:var(--text3);flex:1">${dep.note}</span>
-      ${dep.id==='init'?'<span style="font-size:10px;color:var(--text2)">초기</span>':`<button class="del-btn" data-depid="${dep.id}">✕</button>`}
-    </div>`).join('');
-  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:5px">${rows}
-    <div style="font-size:11px;color:var(--text2);padding:4px 2px">총 입금: <strong style="color:var(--text)">$${totalDeposit().toFixed(2)}</strong></div>
-  </div>`;
-  el.querySelectorAll('.del-btn[data-depid]').forEach(btn=>{
-    btn.addEventListener('click',()=>delDeposit(btn.dataset.depid));
-  });
-}
-
-async function loadAll(){
-  try{
-    const [b,m,bg,dep]=await Promise.all([dbGet('bets'),dbGet('memos','*'),dbGet('budget'),dbGet('deposits')]);
-    bets=b||[];
-    memos=(m||[]).reverse();
-    if(bg&&bg.length>0){budget={...bg[0]};}
-    // DB deposits 있으면 덮어씀 (없으면 localStorage 유지)
-    if(dep&&dep.length>0){
-      deposits=dep.map(d=>({id:d.id,amt:parseFloat(d.amt),d:d.d,note:d.note}));
-      saveDeposits();
-    }
-    renderBetting();
-    renderBudget();
-  }catch(e){
-    bets=JSON.parse(localStorage.getItem('lck_v2')||'[]');
-    memos=JSON.parse(localStorage.getItem('lck_memos')||'[]');
-    renderBetting();
-  }
-}
-
+let bets=[],budget={living:551,gamble:79,refund:49,id:null},memos=[],isDark=localStorage.getItem('lck_theme')==='dark';
+let cD,cF,cP,cW,cB,cG,currentPeriod='day';
+const START=20;
 const today=new Date().toISOString().split('T')[0];
 document.getElementById('i-date').value=today;
 document.getElementById('m-date').value=today;
-document.getElementById('d-date').value=today;
-
 if(isDark){document.body.classList.add('dark');document.getElementById('theme-btn').textContent='☀️ 라이트';document.getElementById('theme-color-meta').setAttribute('content','#0c0c14');}
 
+// ✅ 최신 팀 데이터 (Rounds 1-2 Week 1 결과 반영 - 2026.04.03)
+const teams=[
+  {tier:'tier1',name:'Gen.G',record:'W1 KT에 충격 패배 ❌',recent:['L','W','W','W','W'],
+   roster:{TOP:'Kiin',JGL:'Canyon',MID:'Chovy',BOT:'Ruler',SUP:'Duro'},
+   style:'운영형/실수 없음',killrate:'낮음',kalshi:'⚠️ 이변 주의 (KT에 패배)',pp:'UNDER 기본'},
+
+  {tier:'tier1',name:'T1',record:'W1 KT에 0-2 패배 ❌',recent:['L','W','W','L','W'],
+   roster:{TOP:'Doran',JGL:'Oner',MID:'Faker',BOT:'Peyz',SUP:'Keria'},
+   style:'공격+운영 혼합',killrate:'중간',kalshi:'⚠️ 변수 큼',pp:'상황 따라'},
+
+  {tier:'tier1',name:'Hanwha Life',record:'W1 BRION 2-0 ✅',recent:['W','W','L','L','W'],
+   roster:{TOP:'Zeus',JGL:'Kanavi',MID:'Zeka',BOT:'Gumayusi',SUP:'Delight'},
+   style:'공격적/캐리형',killrate:'높음',kalshi:'✅ 점점 강해짐',pp:'OVER 가능'},
+
+  {tier:'tier2',name:'KT Rolster',record:'W1 2승! T1+GenG 격파 🔥',recent:['W','W','W','L','L'],
+   roster:{TOP:'PerfecT',JGL:'Cuzz',MID:'Bdd',BOT:'Aiming',SUP:'Ghost'},
+   style:'상승세 / 현재 폼 최고',killrate:'중간',kalshi:'⚠️ 폼 좋지만 변동성',pp:'UNDER 기본'},
+
+  {tier:'tier2',name:'DN SOOPers',record:'W1 DRX 2-0 업셋 ✅',recent:['W','L','W','L','W'],
+   roster:{TOP:'DuDu',JGL:'Pyosik',MID:'Clozer',BOT:'deokdam',SUP:'Peter'},
+   style:'중위권/업셋',killrate:'낮음',kalshi:'❌ 상위권 상대',pp:'UNDER 기본'},
+
+  {tier:'tier2',name:'Dplus KIA',record:'W1 NS에 0-2 패배 ❌',recent:['L','W','W','L','L'],
+   roster:{TOP:'Siwoo',JGL:'Lucid',MID:'ShowMaker',BOT:'Smash',SUP:'Career'},
+   style:'공격적/기복',killrate:'중간',kalshi:'⚠️ 업셋 위험',pp:'봇라인 UNDER'},
+
+  {tier:'tier2',name:'Nongshim RF',record:'W1 DK 2-0 업셋 ✅',recent:['W','L','W','L','L'],
+   roster:{TOP:'Kingen',JGL:'Sponge',MID:'Scout',BOT:'Taeyoon',SUP:'Lehens'},
+   style:'케미 형성 중',killrate:'낮음',kalshi:'⚠️ 예측 어려움',pp:'UNDER 기본'},
+
+  {tier:'tier3',name:'DRX',record:'W1 SOOPers에 0-2 패배 ❌',recent:['L','L','L','L','W'],
+   roster:{TOP:'Rich',JGL:'Vincenzo',MID:'ucal',BOT:'Jiwoo',SUP:'Andil'},
+   style:'전력 미지수',killrate:'낮음',kalshi:'❌ 거의 불가',pp:'UNDER ⭐⭐'},
+
+  {tier:'tier3',name:'Hanjin BRION',record:'W1 BFX 2-0 첫 승! 🎉',recent:['W','L','L','L','L'],
+   roster:{TOP:'Casting',JGL:'GIDEON',MID:'Fisher',BOT:'Teddy',SUP:'Namgung'},
+   style:'수동적/킬 적음',killrate:'매우 낮음',kalshi:'❌ 거의 패배',pp:'UNDER ⭐⭐⭐'},
+
+  {tier:'tier3',name:'BNK FEARX',record:'W1 BRION에 0-2 패배 ❌',recent:['L','W','W','L','W'],
+   roster:{TOP:'Clear',JGL:'Raptor',MID:'VicLa',BOT:'Diable',SUP:'Kellin'},
+   style:'변동성/예측 어려움',killrate:'중간',kalshi:'❌ 예측 어려움',pp:'리스크 큼'},
+];
+
 function toggleTheme(){
-  isDark=!isDark;
-  document.body.classList.toggle('dark',isDark);
+  isDark=!isDark;document.body.classList.toggle('dark',isDark);
   document.getElementById('theme-btn').textContent=isDark?'☀️ 라이트':'🌙 다크';
   document.getElementById('theme-color-meta').setAttribute('content',isDark?'#0c0c14':'#ffffff');
   localStorage.setItem('lck_theme',isDark?'dark':'light');
@@ -455,24 +343,10 @@ function toggleTheme(){
   if(document.getElementById('page-budget').classList.contains('active'))renderBudget();
 }
 
-const teams=[
-  {tier:'tier1',name:'Gen.G',record:'LCK Cup 우승 🏆',recent:['W','W','W','W','W'],roster:{TOP:'Kiin',JGL:'Canyon',MID:'Chovy',BOT:'Ruler',SUP:'Duro'},style:'운영형/실수 없음',killrate:'낮음',kalshi:'✅ 거의 항상 유리',pp:'UNDER 기본'},
-  {tier:'tier1',name:'T1',record:'2025 월드챔피언',recent:['W','W','L','W','L'],roster:{TOP:'Doran',JGL:'Oner',MID:'Faker',BOT:'Peyz',SUP:'Keria'},style:'공격+운영 혼합',killrate:'중간',kalshi:'⚠️ 변수 큼',pp:'상황 따라'},
-  {tier:'tier1',name:'Hanwha Life',record:'2026 슈퍼팀',recent:['W','W','L','L','W'],roster:{TOP:'Zeus',JGL:'Kanavi',MID:'Zeka',BOT:'Gumayusi',SUP:'Delight'},style:'공격적/캐리형',killrate:'높음',kalshi:'✅ 점점 강해짐',pp:'OVER 가능'},
-  {tier:'tier2',name:'KT Rolster',record:'W1 T1 격파!',recent:['W','L','L','W','L'],roster:{TOP:'PerfecT',JGL:'Cuzz',MID:'Bdd',BOT:'Aiming',SUP:'Ghost'},style:'불안정/편차 큼',killrate:'낮음',kalshi:'❌ 단독 위험',pp:'UNDER 기본'},
-  {tier:'tier2',name:'DN SOOPers',record:'W1 업셋 1승',recent:['W','L','W','L','W'],roster:{TOP:'DuDu',JGL:'Pyosik',MID:'Clozer',BOT:'deokdam',SUP:'Peter'},style:'중위권/업셋',killrate:'낮음',kalshi:'❌ 상위권 상대',pp:'UNDER 기본'},
-  {tier:'tier2',name:'Dplus KIA',record:'LCK Cup 준결승',recent:['W','W','W','L','L'],roster:{TOP:'Siwoo',JGL:'Lucid',MID:'ShowMaker',BOT:'Smash',SUP:'Career'},style:'공격적/기복',killrate:'중간',kalshi:'⚠️ 업셋 위험',pp:'봇라인 UNDER'},
-  {tier:'tier3',name:'Nongshim RF',record:'개편 중',recent:['W','L','W','L','L'],roster:{TOP:'Kingen',JGL:'Sponge',MID:'Scout',BOT:'Taeyoon',SUP:'Lehens'},style:'케미 형성 중',killrate:'낮음',kalshi:'⚠️ 예측 어려움',pp:'UNDER 기본'},
-  {tier:'tier3',name:'DRX',record:'전면 개편',recent:['L','L','L','W','L'],roster:{TOP:'Rich',JGL:'Vincenzo',MID:'ucal',BOT:'Jiwoo',SUP:'Andil'},style:'전력 미지수',killrate:'낮음',kalshi:'❌ 거의 불가',pp:'UNDER ⭐⭐'},
-  {tier:'tier3',name:'Hanjin BRION',record:'하위권',recent:['L','L','L','L','L'],roster:{TOP:'Casting',JGL:'GIDEON',MID:'Fisher',BOT:'Teddy',SUP:'Namgung'},style:'수동적/킬 적음',killrate:'매우 낮음',kalshi:'❌ 거의 패배',pp:'UNDER ⭐⭐⭐'},
-  {tier:'tier3',name:'BNK FEARX',record:'LCK Cup 준우승',recent:['W','W','L','W','L'],roster:{TOP:'Clear',JGL:'Raptor',MID:'VicLa',BOT:'Diable',SUP:'Kellin'},style:'변동성/예측 어려움',killrate:'중간',kalshi:'❌ 예측 어려움',pp:'리스크 큼'},
-];
-
 function switchTab(t,el){
   document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
-  document.getElementById('page-'+t).classList.add('active');
-  el.classList.add('active');
+  document.getElementById('page-'+t).classList.add('active');el.classList.add('active');
   if(t==='budget')renderBudget();
   if(t==='teams')renderTeams();
   if(t==='memo')renderMemos();
@@ -506,61 +380,54 @@ function renderTeams(filter='all'){
   }).join('');
 }
 
-function addMemo(){
+function setPeriod(p,btn){
+  currentPeriod=p;
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderBetting();
+}
+
+function groupByPeriod(dm,period){
+  const grouped={};
+  Object.entries(dm).forEach(([d,v])=>{
+    let key;
+    if(period==='day'){key=d;}
+    else if(period==='week'){const dt=new Date(d);const day=dt.getDay();const diff=dt.getDate()-day+(day===0?-6:1);const mon=new Date(dt.setDate(diff));key=mon.toISOString().split('T')[0];}
+    else if(period==='month'){key=d.slice(0,7);}
+    grouped[key]=(grouped[key]||0)+v;
+  });
+  return grouped;
+}
+
+async function addMemo(){
   const d=document.getElementById('m-date').value;
   const tag=document.getElementById('m-tag').value;
   const pnl=parseFloat(document.getElementById('m-pnl').value)||0;
   const text=document.getElementById('m-text').value.trim();
   if(!text)return;
-  memos.unshift({d,tag,pnl,text,ts:Date.now()});
-  localStorage.setItem('lck_memos',JSON.stringify(memos));
+  await dbInsert('memos',{d,tag,pnl,text,ts:Date.now()});
+  const m=await dbGet('memos');
+  memos=(m||[]).reverse();
   document.getElementById('m-text').value='';
   document.getElementById('m-pnl').value='';
   document.getElementById('m-tag').value='neutral';
   renderMemos();
 }
 
-function delMemo(i){
-  if(confirm('삭제?')){memos.splice(i,1);localStorage.setItem('lck_memos',JSON.stringify(memos));renderMemos();}
+async function delMemo(id){
+  if(confirm('삭제?')){
+    await dbDelete('memos',id);
+    const m=await dbGet('memos');
+    memos=(m||[]).reverse();
+    renderMemos();
+  }
 }
 
 function renderMemos(){
   const ml=document.getElementById('memo-list');
   if(!memos.length){ml.innerHTML='<div class="empty" style="background:var(--bg2);border-radius:var(--radius);padding:32px;border:1px solid var(--border)">아직 기록이 없어요 ✏️</div>';return;}
-  let currentPeriod='day';
-
-function setPeriod(p,btn){
-  currentPeriod=p;
-  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderBetting();
-}
-
-// 날짜를 기간별로 그룹핑
-function groupByPeriod(dm, period){
-  const grouped={};
-  Object.entries(dm).forEach(([d,v])=>{
-    let key;
-    if(period==='day'){
-      key=d;
-    } else if(period==='week'){
-      // 해당 날짜가 속한 주의 월요일
-      const dt=new Date(d);
-      const day=dt.getDay();
-      const diff=dt.getDate()-day+(day===0?-6:1);
-      const mon=new Date(dt.setDate(diff));
-      key=mon.toISOString().split('T')[0];
-    } else if(period==='month'){
-      key=d.slice(0,7); // YYYY-MM
-    }
-    grouped[key]=(grouped[key]||0)+v;
-  });
-  return grouped;
-}
-
-const f$=n=>'$'+Math.abs(n).toFixed(2);
+  const f$=n=>'$'+Math.abs(n).toFixed(2);
   const fp=n=>(n>=0?'+':'-')+f$(n);
-  ml.innerHTML=memos.map((m,i)=>{
+  ml.innerHTML=memos.map(m=>{
     const tc=m.tag==='win'?'tag-win':m.tag==='lose'?'tag-lose':'tag-neutral';
     const tl=m.tag==='win'?'✅ 수익':m.tag==='lose'?'❌ 손실':'📝 일반';
     const pc=m.pnl>0?'#22c472':m.pnl<0?'#ef4444':'var(--text2)';
@@ -569,44 +436,16 @@ const f$=n=>'$'+Math.abs(n).toFixed(2);
         <div class="memo-date">${m.d}</div>
         <div style="display:flex;gap:6px;align-items:center">
           <span class="memo-tag ${tc}">${tl}</span>
-          <button class="del-btn" onclick="delMemo(${i})">✕</button>
+          <button class="del-btn" data-memoid="${m.id}">✕</button>
         </div>
       </div>
       <div class="memo-text">${m.text.replace(/\n/g,'<br>')}</div>
       ${m.pnl!==0?`<div class="memo-pnl" style="color:${pc}">${fp(m.pnl)}</div>`:''}
     </div>`;
   }).join('');
-}
-
-let currentPeriod='day';
-
-function setPeriod(p,btn){
-  currentPeriod=p;
-  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderBetting();
-}
-
-// 날짜를 기간별로 그룹핑
-function groupByPeriod(dm, period){
-  const grouped={};
-  Object.entries(dm).forEach(([d,v])=>{
-    let key;
-    if(period==='day'){
-      key=d;
-    } else if(period==='week'){
-      // 해당 날짜가 속한 주의 월요일
-      const dt=new Date(d);
-      const day=dt.getDay();
-      const diff=dt.getDate()-day+(day===0?-6:1);
-      const mon=new Date(dt.setDate(diff));
-      key=mon.toISOString().split('T')[0];
-    } else if(period==='month'){
-      key=d.slice(0,7); // YYYY-MM
-    }
-    grouped[key]=(grouped[key]||0)+v;
+  ml.querySelectorAll('.del-btn[data-memoid]').forEach(btn=>{
+    btn.addEventListener('click',()=>delMemo(btn.dataset.memoid));
   });
-  return grouped;
 }
 
 const f$=n=>'$'+Math.abs(n).toFixed(2);
@@ -621,9 +460,7 @@ async function addBet(){
   const rt=parseFloat(document.getElementById('i-ret').value)||0;
   const rs=document.getElementById('i-res').value;
   const pnl=rs==='성공'?rt-bt:rs==='실패'?-bt:0;
-  const newBet={d,pl,pk,dr,bt,rt,rs,pnl};
-  await dbInsert('bets',newBet);
-  // DB에서 최신 목록을 다시 불러옴 (id 포함)
+  await dbInsert('bets',{d,pl,pk,dr,bt,rt,rs,pnl});
   bets=await dbGet('bets');
   document.getElementById('i-pick').value='';
   document.getElementById('i-bet').value='';
@@ -631,32 +468,18 @@ async function addBet(){
   renderBetting();
 }
 
-// ✅ 수정: 배열 인덱스 대신 DB id로 처리
 async function updateRes(id,v){
-  const b=bets.find(x=>x.id===id);
-  if(!b)return;
-  b.rs=v;
-  b.pnl=v==='성공'?b.rt-b.bt:v==='실패'?-b.bt:0;
-  await dbUpdate('bets',id,{rs:b.rs,pnl:b.pnl});
-  renderBetting();
+  const b=bets.find(x=>x.id===id);if(!b)return;
+  b.rs=v;b.pnl=v==='성공'?b.rt-b.bt:v==='실패'?-b.bt:0;
+  await dbUpdate('bets',id,{rs:b.rs,pnl:b.pnl});renderBetting();
 }
-
 async function updateRet(id,v){
-  const b=bets.find(x=>x.id===id);
-  if(!b)return;
-  b.rt=parseFloat(v)||0;
-  if(b.rs==='성공')b.pnl=b.rt-b.bt;
-  await dbUpdate('bets',id,{rt:b.rt,pnl:b.pnl});
-  renderBetting();
+  const b=bets.find(x=>x.id===id);if(!b)return;
+  b.rt=parseFloat(v)||0;if(b.rs==='성공')b.pnl=b.rt-b.bt;
+  await dbUpdate('bets',id,{rt:b.rt,pnl:b.pnl});renderBetting();
 }
-
 async function delBet(id){
-  if(confirm('삭제?')){
-    await dbDelete('bets',id);
-    // ✅ 수정: DB에서 다시 불러와서 bets 배열 갱신
-    bets=await dbGet('bets');
-    renderBetting();
-  }
+  if(confirm('삭제?')){await dbDelete('bets',id);bets=await dbGet('bets');renderBetting();}
 }
 
 function updateBudget(){
@@ -664,7 +487,7 @@ function updateBudget(){
   const g=parseFloat(document.getElementById('b-inp-gamble').value);
   const r=parseFloat(document.getElementById('b-inp-refund').value);
   if(!isNaN(l))budget.living=l;if(!isNaN(g))budget.gamble=g;if(!isNaN(r))budget.refund=r;
-  localStorage.setItem('lck_budget',JSON.stringify(budget));
+  if(budget.id)dbUpdate('budget',budget.id,{living:budget.living,gamble:budget.gamble,refund:budget.refund});
   document.getElementById('b-inp-living').value='';
   document.getElementById('b-inp-gamble').value='';
   document.getElementById('b-inp-refund').value='';
@@ -679,23 +502,19 @@ function renderBetting(){
   const pend=bets.filter(b=>b.rs==='진행중').length;
   const settled=wins+losses;
   const pnl=bets.reduce((s,b)=>s+b.pnl,0);
-  const start=totalDeposit();
-  const funds=start+pnl;
+  const funds=START+pnl;
   const wr=settled>0?Math.round(wins/settled*100):0;
   document.getElementById('c-funds').textContent=f$(funds);
-  document.getElementById('c-funds').className='card-value '+(funds>=start?'cv-default':'cv-red');
+  document.getElementById('c-funds').className='card-value '+(funds>=START?'cv-default':'cv-red');
   const pe=document.getElementById('c-pnl');
   pe.textContent=fp(pnl);pe.className='card-value '+(pnl>=0?'cv-green':'cv-red');
   document.getElementById('c-wr').textContent=wr+'%';
   document.getElementById('c-wrsub').textContent=settled>0?`${wins}승 ${losses}패`:'';
   document.getElementById('c-total').textContent=bets.length+'회';
   document.getElementById('c-totalsub').textContent=pend>0?`⏳ ${pend}개 진행중`:'';
-
   const tb=document.getElementById('t-body');
-  if(!bets.length){
-    tb.innerHTML='<tr><td colspan="9" class="empty">아직 베팅 기록이 없습니다</td></tr>';
-  } else {
-    // UUID를 data-id 속성으로 저장 — onclick 인라인에 넣으면 UUID가 깨짐
+  if(!bets.length){tb.innerHTML='<tr><td colspan="9" class="empty">아직 베팅 기록이 없습니다</td></tr>';}
+  else{
     tb.innerHTML=[...bets].reverse().map(b=>{
       const pb=b.pl==='PrizePicks'?'bp':'bk';
       const pc=b.pnl>0?'#22c472':b.pnl<0?'#ef4444':'var(--text2)';
@@ -704,7 +523,7 @@ function renderBetting(){
         <td><span class="badge ${pb}">${b.pl}</span></td>
         <td style="font-weight:500;font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.pk}</td>
         <td style="color:var(--text2);font-size:11px">${b.dr}</td>
-        <td style="font-size:11px">${b.bt.toFixed(2)}</td>
+        <td style="font-size:11px">$${b.bt.toFixed(2)}</td>
         <td><input type="number" class="ret-input" value="${b.rt.toFixed(2)}" step="0.01"/></td>
         <td style="color:${pc};font-weight:700;font-size:11px">${fp(b.pnl)}</td>
         <td><select class="res-select">
@@ -715,8 +534,6 @@ function renderBetting(){
         <td><button class="del-btn">✕</button></td>
       </tr>`;
     }).join('');
-
-    // 이벤트 위임: data-id로 UUID를 안전하게 읽음
     tb.querySelectorAll('tr[data-id]').forEach(row=>{
       const id=row.dataset.id;
       row.querySelector('.del-btn').addEventListener('click',()=>delBet(id));
@@ -724,41 +541,23 @@ function renderBetting(){
       row.querySelector('.ret-input').addEventListener('change',function(){updateRet(id,this.value);});
     });
   }
-
-  renderDeposits();
   const {grid,tick}=gc();
-  // 날짜별 베팅 손익 집계
   const dm={};[...bets].sort((a,b)=>a.d.localeCompare(b.d)).forEach(b=>{dm[b.d]=(dm[b.d]||0)+b.pnl});
-  // 기간별 그룹핑 (1일/1주/1달)
   const grouped=groupByPeriod(dm,currentPeriod);
   const dates=Object.keys(grouped).sort();
   const dpnl=dates.map(d=>+grouped[d].toFixed(2));
-  // 자금 그래프: 베팅 날짜 + deposit 날짜 합쳐서 시간순으로 자금 변화 추적
-  const depositMap={};
-  deposits.filter(d=>d.id!=='init').forEach(d=>{depositMap[d.d]=(depositMap[d.d]||0)+d.amt;});
-  const allDates=[...new Set([...dates,...Object.keys(depositMap)])].sort();
-  let run=deposits.find(d=>d.id==='init')?.amt||20;
-  const fv=allDates.map(d=>{
-    if(depositMap[d])run+=depositMap[d];
-    if(dm[d])run+=dm[d];
-    return+run.toFixed(2);
-  });
-  const fDates=allDates;
+  let run=START;const fv=dates.map(d=>{run+=dm[d]||0;return+run.toFixed(2)});
   const ppP=+bets.filter(b=>b.pl==='PrizePicks').reduce((s,b)=>s+b.pnl,0).toFixed(2);
   const kP=+bets.filter(b=>b.pl==='Kalshi').reduce((s,b)=>s+b.pnl,0).toFixed(2);
   const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tick,font:{size:9},maxRotation:0},grid:{color:grid,lineWidth:1}},y:{ticks:{color:tick,font:{size:9},callback:v=>'$'+v},grid:{color:grid,lineWidth:1}}}};
-
   if(cD)cD.destroy();
   cD=new Chart(document.getElementById('ch-daily'),{type:'bar',data:{labels:dates.length?dates:['없음'],datasets:[{data:dates.length?dpnl:[0],backgroundColor:dpnl.map(v=>v>=0?'rgba(34,196,114,0.8)':'rgba(239,68,68,0.8)'),borderRadius:6,borderSkipped:false,borderWidth:0}]},options:{...base,animation:{duration:600,easing:'easeOutQuart'}}});
-
   if(cF)cF.destroy();
-  cF=new Chart(document.getElementById('ch-funds'),{type:'line',data:{labels:fDates.length?fDates:['시작'],datasets:[{data:fDates.length?fv:[totalDeposit()],borderColor:'#3b82f6',backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,160);g.addColorStop(0,'rgba(59,130,246,0.15)');g.addColorStop(1,'rgba(59,130,246,0)');return g;},borderWidth:2.5,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:'#fff',pointHoverBorderColor:'#3b82f6',pointHoverBorderWidth:2,fill:true,tension:0.5}]},options:{...base,animation:{duration:600,easing:'easeOutQuart'}}});
-
+  cF=new Chart(document.getElementById('ch-funds'),{type:'line',data:{labels:dates.length?dates:['시작'],datasets:[{data:dates.length?fv:[START],borderColor:'#3b82f6',backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,160);g.addColorStop(0,'rgba(59,130,246,0.15)');g.addColorStop(1,'rgba(59,130,246,0)');return g;},borderWidth:2.5,pointRadius:0,pointHoverRadius:4,fill:true,tension:0.5}]},options:{...base,animation:{duration:600}}});
   if(cP)cP.destroy();
   cP=new Chart(document.getElementById('ch-plat'),{type:'bar',data:{labels:['PrizePicks','Kalshi'],datasets:[{data:[ppP,kP],backgroundColor:['rgba(59,130,246,0.8)','rgba(139,92,246,0.8)'],borderRadius:8,borderSkipped:false,borderWidth:0}]},options:{...base,animation:{duration:600}}});
-
   if(cW)cW.destroy();
-  cW=new Chart(document.getElementById('ch-wr'),{type:'doughnut',data:{labels:['성공','실패','진행중'],datasets:[{data:[wins||0,losses||0,pend||0],backgroundColor:['rgba(34,196,114,0.85)','rgba(239,68,68,0.8)','rgba(250,204,21,0.8)'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'72%',animation:{duration:600,easing:'easeOutQuart'}}});
+  cW=new Chart(document.getElementById('ch-wr'),{type:'doughnut',data:{labels:['성공','실패','진행중'],datasets:[{data:[wins||0,losses||0,pend||0],backgroundColor:['rgba(34,196,114,0.85)','rgba(239,68,68,0.8)','rgba(250,204,21,0.8)'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'72%',animation:{duration:600}}});
 }
 
 function renderBudget(){
@@ -771,7 +570,16 @@ function renderBudget(){
   cB=new Chart(document.getElementById('ch-budget'),{type:'doughnut',data:{labels:['생활','도박','리펀드'],datasets:[{data:[budget.living,budget.gamble,budget.refund],backgroundColor:['rgba(59,130,246,0.8)','rgba(245,158,11,0.8)','rgba(34,196,114,0.8)'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'65%',animation:{duration:600}}});
   const used=Math.max(0,20-budget.gamble);const left=Math.min(20,budget.gamble);
   if(cG)cG.destroy();
-  cG=new Chart(document.getElementById('ch-gamble'),{type:'bar',data:{labels:['도박 예산'],datasets:[{label:'사용',data:[used],backgroundColor:'rgba(239,68,68,0.8)',borderRadius:{topLeft:0,topRight:6,bottomLeft:0,bottomRight:6},borderSkipped:false},{label:'남은',data:[left],backgroundColor:'rgba(34,196,114,0.8)',borderRadius:{topLeft:0,topRight:6,bottomLeft:0,bottomRight:6},borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tick,font:{size:10}},grid:{display:false}},y:{max:20,ticks:{color:tick,font:{size:9},callback:v=>'$'+v},grid:{color:grid}}},indexAxis:'y',animation:{duration:600}}});
+  cG=new Chart(document.getElementById('ch-gamble'),{type:'bar',data:{labels:['도박 예산'],datasets:[{label:'사용',data:[used],backgroundColor:'rgba(239,68,68,0.8)',borderRadius:6,borderSkipped:false},{label:'남은',data:[left],backgroundColor:'rgba(34,196,114,0.8)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tick,font:{size:10}},grid:{display:false}},y:{max:20,ticks:{color:tick,font:{size:9},callback:v=>'$'+v},grid:{color:grid}}},indexAxis:'y',animation:{duration:600}}});
+}
+
+async function loadAll(){
+  try{
+    const [b,m,bg]=await Promise.all([dbGet('bets'),dbGet('memos','*'),dbGet('budget')]);
+    bets=b||[];memos=(m||[]).reverse();
+    if(bg&&bg.length>0){budget={...bg[0]};}
+    renderBetting();renderBudget();
+  }catch(e){bets=[];renderBetting();}
 }
 
 renderBetting();
