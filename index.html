@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LCK 베팅 대시보드</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f7f8fa;color:#1a1a2e;font-family:'Inter',system-ui,sans-serif;padding:2rem;min-height:100vh}
+h1{font-size:20px;font-weight:600;color:#1a1a2e;margin-bottom:0.25rem}
+.subtitle{font-size:13px;color:#9a9aaa;margin-bottom:1.2rem}
+.tabs{display:flex;gap:4px;margin-bottom:1.5rem;background:#eef0f5;padding:4px;border-radius:10px;width:fit-content}
+.tab{padding:7px 20px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:none;color:#9a9aaa;transition:all 0.2s;font-family:'Inter',system-ui,sans-serif}
+.tab.active{background:#fff;color:#1a1a2e;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+.page{display:none}.page.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.2rem}
+.card{background:#fff;border:1px solid #eef0f5;border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.card.c-white::before{background:#e0e0e0}.card.c-green::before{background:#22c472}
+.card.c-blue::before{background:#3b82f6}.card.c-purple::before{background:#8b5cf6}
+.card.c-amber::before{background:#f59e0b}.card.c-red::before{background:#ef4444}
+.card-label{font-size:11px;color:#9a9aaa;margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+.card-value{font-size:24px;font-weight:600;letter-spacing:-0.5px}
+.cv-white{color:#1a1a2e}.cv-green{color:#22c472}.cv-red{color:#ef4444}.cv-blue{color:#3b82f6}.cv-purple{color:#8b5cf6}.cv-amber{color:#f59e0b}
+.card-sub{font-size:11px;color:#9a9aaa;margin-top:4px}
+.section{background:#fff;border:1px solid #eef0f5;border-radius:14px;padding:18px;margin-bottom:14px}
+.section-title{font-size:11px;color:#9a9aaa;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.chart-wrap{position:relative;width:100%}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:12px;font-size:12px;color:#9a9aaa}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.form-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.input-wrap{position:relative}
+.input-wrap .prefix{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#9a9aaa;font-size:13px;pointer-events:none}
+.input-wrap input{padding-left:22px!important}
+input,select{background:#f7f8fa;border:1px solid #eef0f5;border-radius:8px;color:#1a1a2e;padding:9px 12px;font-size:13px;width:100%;font-family:'Inter',system-ui,sans-serif;outline:none;transition:border 0.2s}
+input:focus,select:focus{border-color:#3b82f6;background:#fff}
+select option{background:#fff}
+.btn{border:none;border-radius:8px;padding:9px 20px;font-size:13px;cursor:pointer;font-family:'Inter',system-ui,sans-serif;font-weight:500;transition:opacity 0.2s}
+.btn-dark{background:#1a1a2e;color:#fff}.btn-dark:hover{opacity:0.85}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:#9a9aaa;font-weight:500;padding:8px 10px;text-align:left;border-bottom:1px solid #eef0f5;font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
+td{padding:10px 10px;border-bottom:1px solid #f7f8fa;color:#1a1a2e;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+.badge{display:inline-block;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:500}
+.bp{background:#eff6ff;color:#3b82f6}.bk{background:#f5f3ff;color:#8b5cf6}
+.bw{background:#f0fdf4;color:#22c472}.bl{background:#fff1f2;color:#ef4444}.bn{background:#fefce8;color:#ca8a04}
+td select{background:#f7f8fa;border:1px solid #eef0f5;border-radius:6px;padding:4px 8px;font-size:12px;color:#1a1a2e;width:auto;cursor:pointer}
+td input[type=number]{background:#f7f8fa;border:1px solid #eef0f5;border-radius:6px;padding:4px 8px;font-size:12px;width:80px}
+.del-btn{background:none;border:none;cursor:pointer;color:#d1d5db;font-size:16px;padding:2px 6px;border-radius:4px;transition:color 0.2s}
+.del-btn:hover{color:#ef4444}
+.empty{color:#c4c4d0;text-align:center;padding:30px;font-size:13px}
+.rule-box{background:#fff8f0;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;font-size:12px;color:#92400e;line-height:1.8}
+
+/* 팀 카드 */
+.team-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.team-card{background:#fff;border:1px solid #eef0f5;border-radius:14px;padding:18px;position:relative;overflow:hidden}
+.team-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:14px 14px 0 0}
+.tier1::before{background:linear-gradient(90deg,#3b82f6,#8b5cf6)}
+.tier2::before{background:linear-gradient(90deg,#f59e0b,#f97316)}
+.tier3::before{background:linear-gradient(90deg,#9ca3af,#6b7280)}
+.team-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.team-name{font-size:16px;font-weight:600;color:#1a1a2e}
+.team-tier{font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px}
+.t1-badge{background:#eff6ff;color:#3b82f6}
+.t2-badge{background:#fff8f0;color:#f59e0b}
+.t3-badge{background:#f9fafb;color:#6b7280}
+.team-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.team-stat{background:#f7f8fa;border-radius:8px;padding:8px 10px}
+.team-stat-label{font-size:10px;color:#9a9aaa;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.4px}
+.team-stat-value{font-size:13px;font-weight:500;color:#1a1a2e}
+.roster-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:10px}
+.roster-item{background:#f7f8fa;border-radius:6px;padding:5px 6px;text-align:center}
+.roster-pos{font-size:9px;color:#9a9aaa;font-weight:500}
+.roster-name{font-size:11px;font-weight:600;color:#1a1a2e}
+.betting-row{display:flex;gap:6px;flex-wrap:wrap}
+.bet-tag{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:500}
+.bet-good{background:#f0fdf4;color:#22c472}
+.bet-warn{background:#fff8f0;color:#f59e0b}
+.bet-bad{background:#fff1f2;color:#ef4444}
+.recent{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.result-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+.win{background:#f0fdf4;color:#22c472}
+.lose{background:#fff1f2;color:#ef4444}
+.tier-filter{display:flex;gap:6px;margin-bottom:16px}
+.filter-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid #eef0f5;background:#fff;color:#9a9aaa;font-family:'Inter',system-ui,sans-serif;transition:all 0.2s}
+.filter-btn.active{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
+</style>
+</head>
+<body>
+<h1>🏆 LCK 베팅 트래커</h1>
+<div class="subtitle">2026 Rounds 1-2 · 시작 자금 $20.00</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('betting',this)">📊 베팅</button>
+  <button class="tab" onclick="switchTab('budget',this)">💳 예산</button>
+  <button class="tab" onclick="switchTab('teams',this)">🏅 팀 분석</button>
+</div>
+
+<!-- 베팅 탭 -->
+<div class="page active" id="page-betting">
+  <div class="cards">
+    <div class="card c-white"><div class="card-label">현재 자금</div><div class="card-value cv-white" id="c-funds">$20.00</div></div>
+    <div class="card c-green"><div class="card-label">총 손익</div><div class="card-value cv-green" id="c-pnl">+$0.00</div></div>
+    <div class="card c-blue"><div class="card-label">승률</div><div class="card-value cv-blue" id="c-wr">0%</div><div class="card-sub" id="c-wrsub"></div></div>
+    <div class="card c-purple"><div class="card-label">총 베팅</div><div class="card-value cv-purple" id="c-total">0회</div><div class="card-sub" id="c-totalsub"></div></div>
+  </div>
+  <div class="section">
+    <div class="section-title">베팅 추가</div>
+    <div class="form-grid">
+      <input type="date" id="i-date"/>
+      <select id="i-plat"><option value="PrizePicks">PrizePicks</option><option value="Kalshi">Kalshi</option></select>
+      <input type="text" id="i-pick" placeholder="픽 내용 (예: Chovy ↓8.5)"/>
+      <select id="i-dir"><option value="UNDER">UNDER</option><option value="OVER">OVER</option><option value="MIXED">MIXED</option><option value="승패">승패</option></select>
+    </div>
+    <div class="form-grid">
+      <div class="input-wrap"><span class="prefix">$</span><input type="number" id="i-bet" placeholder="베팅액" step="0.01"/></div>
+      <div class="input-wrap"><span class="prefix">$</span><input type="number" id="i-ret" placeholder="반환금" step="0.01"/></div>
+      <select id="i-res"><option value="진행중">⏳ 진행중</option><option value="성공">✅ 성공</option><option value="실패">❌ 실패</option></select>
+      <button class="btn btn-dark" onclick="addBet()">+ 베팅 추가</button>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="section"><div class="section-title">날짜별 손익</div><div class="chart-wrap" style="height:170px"><canvas id="ch-daily"></canvas></div></div>
+    <div class="section"><div class="section-title">자금 변화</div><div class="chart-wrap" style="height:170px"><canvas id="ch-funds"></canvas></div></div>
+  </div>
+  <div class="two-col">
+    <div class="section">
+      <div class="section-title">플랫폼 비교</div>
+      <div class="legend"><span><span class="dot" style="background:#3b82f6"></span>PrizePicks</span><span><span class="dot" style="background:#8b5cf6"></span>Kalshi</span></div>
+      <div class="chart-wrap" style="height:140px"><canvas id="ch-plat"></canvas></div>
+    </div>
+    <div class="section">
+      <div class="section-title">승률 통계</div>
+      <div class="legend"><span><span class="dot" style="background:#22c472"></span>성공</span><span><span class="dot" style="background:#ef4444"></span>실패</span><span><span class="dot" style="background:#facc15"></span>진행중</span></div>
+      <div class="chart-wrap" style="height:140px"><canvas id="ch-wr"></canvas></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">베팅 기록</div>
+    <table>
+      <thead><tr><th>날짜</th><th>플랫폼</th><th>픽 내용</th><th>방향</th><th>베팅액</th><th>반환금</th><th>손익</th><th>결과</th><th></th></tr></thead>
+      <tbody id="t-body"><tr><td colspan="9" class="empty">아직 베팅 기록이 없습니다</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 예산 탭 -->
+<div class="page" id="page-budget">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px">
+    <div class="card c-blue"><div class="card-label">생활 계좌</div><div class="card-value cv-blue" id="b-living">$551</div><div class="card-sub">+ $49 리펀드 대기</div></div>
+    <div class="card c-amber"><div class="card-label">도박 계좌</div><div class="card-value cv-amber" id="b-gamble">$79</div><div class="card-sub">Kalshi + PrizePicks</div></div>
+    <div class="card c-green"><div class="card-label">총 자산</div><div class="card-value cv-green" id="b-total">$679</div><div class="card-sub">리펀드 포함</div></div>
+  </div>
+  <div class="section">
+    <div class="section-title">잔액 업데이트</div>
+    <div class="form-grid-3">
+      <div class="input-wrap"><span class="prefix">$</span><input type="number" id="b-inp-living" placeholder="생활 계좌" step="0.01"/></div>
+      <div class="input-wrap"><span class="prefix">$</span><input type="number" id="b-inp-gamble" placeholder="도박 계좌" step="0.01"/></div>
+      <div class="input-wrap"><span class="prefix">$</span><input type="number" id="b-inp-refund" placeholder="리펀드 대기" step="0.01"/></div>
+    </div>
+    <button class="btn btn-dark" onclick="updateBudget()">업데이트</button>
+  </div>
+  <div class="two-col">
+    <div class="section">
+      <div class="section-title">자산 분포</div>
+      <div class="legend"><span><span class="dot" style="background:#3b82f6"></span>생활</span><span><span class="dot" style="background:#f59e0b"></span>도박</span><span><span class="dot" style="background:#22c472"></span>리펀드</span></div>
+      <div class="chart-wrap" style="height:180px"><canvas id="ch-budget"></canvas></div>
+    </div>
+    <div class="section">
+      <div class="section-title">월간 도박 예산</div>
+      <div class="chart-wrap" style="height:180px"><canvas id="ch-gamble"></canvas></div>
+    </div>
+  </div>
+  <div class="rule-box">⚠️ <strong>예산 원칙</strong><br>· 도박 계좌 $0 → 그달 베팅 즉시 중단<br>· 생활 계좌 → 도박 계좌 이동 <strong>절대 금지</strong><br>· 월 용돈 $100 중 도박 예산 최대 $20</div>
+</div>
+
+<!-- 팀 분석 탭 -->
+<div class="page" id="page-teams">
+  <div class="tier-filter">
+    <button class="filter-btn active" onclick="filterTeams('all',this)">전체</button>
+    <button class="filter-btn" onclick="filterTeams('tier1',this)">Tier 1</button>
+    <button class="filter-btn" onclick="filterTeams('tier2',this)">Tier 2</button>
+    <button class="filter-btn" onclick="filterTeams('tier3',this)">Tier 3</button>
+  </div>
+  <div class="team-grid" id="team-grid"></div>
+</div>
+
+<script>
+let bets=JSON.parse(localStorage.getItem('lck_v2')||'[]');
+let budget=JSON.parse(localStorage.getItem('lck_budget')||'{"living":551,"gamble":79,"refund":49}');
+const START=20;
+let cD,cF,cP,cW,cB,cG;
+document.getElementById('i-date').value=new Date().toISOString().split('T')[0];
+
+const teams=[
+  {tier:'tier1',name:'Gen.G',record:'LCK Cup 우승 🏆',recent:['W','W','W','W','W'],
+   roster:{TOP:'Kiin',JGL:'Canyon',MID:'Chovy',BOT:'Ruler',SUP:'Duro'},
+   style:'운영형 / 거의 실수 없음',strength:'팀워크·오브젝트',weakness:'초반 공격성',
+   kalshi:'✅ 거의 항상 유리',pp:'UNDER 기본',killrate:'낮음 (킬 분산)'},
+  {tier:'tier1',name:'T1',record:'2025 World Champions',recent:['W','W','L','W','L'],
+   roster:{TOP:'Doran',JGL:'Oner',MID:'Faker',BOT:'Peyz',SUP:'Keria'},
+   style:'공격 + 운영 혼합',strength:'한타·개인기량',weakness:'Peyz 적응 중',
+   kalshi:'⚠️ 변수 큼',pp:'상황 따라 다름',killrate:'중간'},
+  {tier:'tier1',name:'Hanwha Life',record:'2026 슈퍼팀',recent:['W','W','L','L','W'],
+   roster:{TOP:'Zeus',JGL:'Kanavi',MID:'Zeka',BOT:'Gumayusi',SUP:'Delight'},
+   style:'공격적 / 캐리형',strength:'라인전·개인기량',weakness:'케미 형성 중',
+   kalshi:'✅ 점점 강해지는 추세',pp:'OVER 가능',killrate:'높음'},
+  {tier:'tier2',name:'KT Rolster',record:'Rounds 1-2 Week1 1승',recent:['W','L','L','W','L'],
+   roster:{TOP:'PerfecT',JGL:'Cuzz',MID:'Bdd',BOT:'Aiming',SUP:'Ghost'},
+   style:'불안정 / 고점-저점 편차',strength:'Bdd 경험',weakness:'팀 운영 불안정',
+   kalshi:'❌ 단독 베팅 위험',pp:'UNDER 기본',killrate:'낮음'},
+  {tier:'tier2',name:'DN SOOPers',record:'Rounds 1-2 Week1 1승',recent:['W','L','W','L','W'],
+   roster:{TOP:'DuDu',JGL:'Pyosik',MID:'Clozer',BOT:'deokdam',SUP:'Peter'},
+   style:'중위권 / 업셋 능력',strength:'팀 합·의외성',weakness:'상위권 상대 불안',
+   kalshi:'❌ 상위권 상대',pp:'UNDER 기본',killrate:'낮음'},
+  {tier:'tier2',name:'Dplus KIA',record:'LCK Cup 준결승',recent:['W','W','W','L','L'],
+   roster:{TOP:'Siwoo',JGL:'Lucid',MID:'ShowMaker',BOT:'Smash',SUP:'Career'},
+   style:'공격적 / 기복 심함',strength:'ShowMaker 개인기',weakness:'신인 봇 듀오',
+   kalshi:'⚠️ 업셋 위험',pp:'봇 라인 UNDER',killrate:'중간'},
+  {tier:'tier3',name:'Nongshim RF',record:'LCK Cup 혼전',recent:['W','L','W','L','L'],
+   roster:{TOP:'Kingen',JGL:'Sponge',MID:'Scout',BOT:'Taeyoon',SUP:'Lehens'},
+   style:'2026 개편 / 케미 형성 중',strength:'Scout 경험',weakness:'팀 완성도 부족',
+   kalshi:'⚠️ 예측 어려움',pp:'UNDER 기본',killrate:'낮음'},
+  {tier:'tier3',name:'DRX',record:'2026 전면 개편',recent:['L','L','L','W','L'],
+   roster:{TOP:'Rich',JGL:'Vincenzo',MID:'ucal',BOT:'Jiwoo',SUP:'Andil'},
+   style:'전력 미지수',strength:'미지수',weakness:'팀 전체 신인',
+   kalshi:'❌ 거의 불가',pp:'UNDER ⭐⭐',killrate:'낮음'},
+  {tier:'tier3',name:'Hanjin BRION',record:'하위권',recent:['L','L','L','L','L'],
+   roster:{TOP:'Casting',JGL:'GIDEON',MID:'Fisher',BOT:'Teddy',SUP:'Namgung'},
+   style:'수동적 / 킬 매우 적음',strength:'Teddy 경험',weakness:'전력 약함',
+   kalshi:'❌ 거의 항상 패배',pp:'UNDER ⭐⭐⭐',killrate:'매우 낮음'},
+  {tier:'tier3',name:'BNK FEARX',record:'LCK Cup 준우승',recent:['W','W','L','W','L'],
+   roster:{TOP:'Clear',JGL:'Raptor',MID:'VicLa',BOT:'Diable',SUP:'Kellin'},
+   style:'변동성 큼 / 예측 어려움',strength:'의외성',weakness:'일관성 부족',
+   kalshi:'❌ 예측 어려움',pp:'리스크 큼',killrate:'중간'},
+];
+
+function filterTeams(tier, btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTeams(tier);
+}
+
+function renderTeams(filter='all'){
+  const grid=document.getElementById('team-grid');
+  const filtered=filter==='all'?teams:teams.filter(t=>t.tier===filter);
+  grid.innerHTML=filtered.map(t=>{
+    const tierLabel=t.tier==='tier1'?'Tier 1':t.tier==='tier2'?'Tier 2':'Tier 3';
+    const tierBadge=t.tier==='tier1'?'t1-badge':t.tier==='tier2'?'t2-badge':'t3-badge';
+    const recentDots=t.recent.map(r=>`<div class="result-dot ${r==='W'?'win':'lose'}">${r}</div>`).join('');
+    const rosterHtml=Object.entries(t.roster).map(([pos,name])=>`
+      <div class="roster-item">
+        <div class="roster-pos">${pos}</div>
+        <div class="roster-name">${name}</div>
+      </div>`).join('');
+    return`<div class="team-card ${t.tier}">
+      <div class="team-header">
+        <div class="team-name">${t.name}</div>
+        <span class="badge ${tierBadge}">${tierLabel}</span>
+      </div>
+      <div class="roster-grid">${rosterHtml}</div>
+      <div class="recent">${recentDots}</div>
+      <div class="team-row">
+        <div class="team-stat"><div class="team-stat-label">스타일</div><div class="team-stat-value" style="font-size:11px">${t.style}</div></div>
+        <div class="team-stat"><div class="team-stat-label">킬 수준</div><div class="team-stat-value">${t.killrate}</div></div>
+        <div class="team-stat"><div class="team-stat-label">Kalshi</div><div class="team-stat-value" style="font-size:11px">${t.kalshi}</div></div>
+        <div class="team-stat"><div class="team-stat-label">PrizePicks</div><div class="team-stat-value">${t.pp}</div></div>
+      </div>
+      <div class="team-stat" style="margin-bottom:8px"><div class="team-stat-label">최근 전적</div><div class="team-stat-value" style="font-size:11px">${t.record}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function switchTab(t,el){
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.getElementById('page-'+t).classList.add('active');
+  el.classList.add('active');
+  if(t==='budget')renderBudget();
+  if(t==='teams')renderTeams();
+}
+
+const f$=n=>'$'+Math.abs(n).toFixed(2);
+const fp=n=>(n>=0?'+':'-')+f$(n);
+
+function addBet(){
+  const d=document.getElementById('i-date').value;
+  const pl=document.getElementById('i-plat').value;
+  const pk=document.getElementById('i-pick').value||'-';
+  const dr=document.getElementById('i-dir').value;
+  const bt=parseFloat(document.getElementById('i-bet').value)||0;
+  const rt=parseFloat(document.getElementById('i-ret').value)||0;
+  const rs=document.getElementById('i-res').value;
+  const pnl=rs==='성공'?rt-bt:rs==='실패'?-bt:0;
+  bets.push({d,pl,pk,dr,bt,rt,rs,pnl});
+  localStorage.setItem('lck_v2',JSON.stringify(bets));
+  document.getElementById('i-pick').value='';
+  document.getElementById('i-bet').value='';
+  document.getElementById('i-ret').value='';
+  renderBetting();
+}
+
+function updateRes(i,v){bets[i].rs=v;bets[i].pnl=v==='성공'?bets[i].rt-bets[i].bt:v==='실패'?-bets[i].bt:0;localStorage.setItem('lck_v2',JSON.stringify(bets));renderBetting();}
+function updateRet(i,v){bets[i].rt=parseFloat(v)||0;if(bets[i].rs==='성공')bets[i].pnl=bets[i].rt-bets[i].bt;localStorage.setItem('lck_v2',JSON.stringify(bets));renderBetting();}
+function delBet(i){if(confirm('삭제할까요?')){bets.splice(i,1);localStorage.setItem('lck_v2',JSON.stringify(bets));renderBetting();}}
+
+function updateBudget(){
+  const l=parseFloat(document.getElementById('b-inp-living').value);
+  const g=parseFloat(document.getElementById('b-inp-gamble').value);
+  const r=parseFloat(document.getElementById('b-inp-refund').value);
+  if(!isNaN(l))budget.living=l;
+  if(!isNaN(g))budget.gamble=g;
+  if(!isNaN(r))budget.refund=r;
+  localStorage.setItem('lck_budget',JSON.stringify(budget));
+  document.getElementById('b-inp-living').value='';
+  document.getElementById('b-inp-gamble').value='';
+  document.getElementById('b-inp-refund').value='';
+  renderBudget();
+}
+
+function renderBetting(){
+  const wins=bets.filter(b=>b.rs==='성공').length;
+  const losses=bets.filter(b=>b.rs==='실패').length;
+  const pend=bets.filter(b=>b.rs==='진행중').length;
+  const settled=wins+losses;
+  const pnl=bets.reduce((s,b)=>s+b.pnl,0);
+  const funds=START+pnl;
+  const wr=settled>0?Math.round(wins/settled*100):0;
+  document.getElementById('c-funds').textContent=f$(funds);
+  document.getElementById('c-funds').className='card-value '+(funds>=START?'cv-white':'cv-red');
+  const pe=document.getElementById('c-pnl');
+  pe.textContent=fp(pnl);
+  pe.className='card-value '+(pnl>=0?'cv-green':'cv-red');
+  document.getElementById('c-wr').textContent=wr+'%';
+  document.getElementById('c-wrsub').textContent=settled>0?`${wins}승 ${losses}패`:'';
+  document.getElementById('c-total').textContent=bets.length+'회';
+  document.getElementById('c-totalsub').textContent=pend>0?`⏳ ${pend}개 진행중`:'';
+  const tb=document.getElementById('t-body');
+  if(!bets.length){tb.innerHTML='<tr><td colspan="9" class="empty">아직 베팅 기록이 없습니다</td></tr>';}
+  else{
+    tb.innerHTML=[...bets].map((b,ri)=>{
+      const i=bets.length-1-ri;
+      const pb=b.pl==='PrizePicks'?'bp':'bk';
+      const pc=b.pnl>0?'#22c472':b.pnl<0?'#ef4444':'#9a9aaa';
+      return`<tr><td style="color:#9a9aaa;font-size:12px">${b.d}</td><td><span class="badge ${pb}">${b.pl}</span></td><td style="font-weight:500">${b.pk}</td><td style="color:#9a9aaa">${b.dr}</td><td>$${b.bt.toFixed(2)}</td><td><input type="number" value="${b.rt.toFixed(2)}" step="0.01" onchange="updateRet(${i},this.value)"/></td><td style="color:${pc};font-weight:600">${fp(b.pnl)}</td><td><select onchange="updateRes(${i},this.value)"><option value="진행중" ${b.rs==='진행중'?'selected':''}>⏳ 진행중</option><option value="성공" ${b.rs==='성공'?'selected':''}>✅ 성공</option><option value="실패" ${b.rs==='실패'?'selected':''}>❌ 실패</option></select></td><td><button class="del-btn" onclick="delBet(${i})">✕</button></td></tr>`;
+    }).join('');
+  }
+  const dm={};
+  [...bets].sort((a,b)=>a.d.localeCompare(b.d)).forEach(b=>{dm[b.d]=(dm[b.d]||0)+b.pnl});
+  const dates=Object.keys(dm).sort();
+  const dpnl=dates.map(d=>+dm[d].toFixed(2));
+  let run=START;
+  const fv=dates.map(d=>{run+=dm[d];return+run.toFixed(2)});
+  const ppP=+bets.filter(b=>b.pl==='PrizePicks').reduce((s,b)=>s+b.pnl,0).toFixed(2);
+  const kP=+bets.filter(b=>b.pl==='Kalshi').reduce((s,b)=>s+b.pnl,0).toFixed(2);
+  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#c4c4d0',font:{size:10}},grid:{color:'#f0f0f5'}},y:{ticks:{color:'#c4c4d0',font:{size:10},callback:v=>'$'+v},grid:{color:'#f0f0f5'}}}};
+  if(cD)cD.destroy();
+  cD=new Chart(document.getElementById('ch-daily'),{type:'bar',data:{labels:dates.length?dates:['없음'],datasets:[{data:dates.length?dpnl:[0],backgroundColor:dpnl.map(v=>v>=0?'#22c472':'#ef4444'),borderRadius:6,borderSkipped:false}]},options:{...base}});
+  if(cF)cF.destroy();
+  cF=new Chart(document.getElementById('ch-funds'),{type:'line',data:{labels:dates.length?dates:['시작'],datasets:[{data:dates.length?fv:[START],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#3b82f6',fill:true,tension:0.4}]},options:{...base}});
+  if(cP)cP.destroy();
+  cP=new Chart(document.getElementById('ch-plat'),{type:'bar',data:{labels:['PrizePicks','Kalshi'],datasets:[{data:[ppP,kP],backgroundColor:['#3b82f6','#8b5cf6'],borderRadius:6,borderSkipped:false}]},options:{...base}});
+  if(cW)cW.destroy();
+  cW=new Chart(document.getElementById('ch-wr'),{type:'doughnut',data:{labels:['성공','실패','진행중'],datasets:[{data:[wins||0,losses||0,pend||0],backgroundColor:['#22c472','#ef4444','#facc15'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'70%'}});
+}
+
+function renderBudget(){
+  const total=budget.living+budget.gamble+budget.refund;
+  document.getElementById('b-living').textContent=f$(budget.living);
+  document.getElementById('b-gamble').textContent=f$(budget.gamble);
+  document.getElementById('b-total').textContent=f$(total);
+  if(cB)cB.destroy();
+  cB=new Chart(document.getElementById('ch-budget'),{type:'doughnut',data:{labels:['생활','도박','리펀드'],datasets:[{data:[budget.living,budget.gamble,budget.refund],backgroundColor:['#3b82f6','#f59e0b','#22c472'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'65%'}});
+  const used=Math.max(0,20-budget.gamble);
+  const left=Math.min(20,budget.gamble);
+  if(cG)cG.destroy();
+  cG=new Chart(document.getElementById('ch-gamble'),{type:'bar',data:{labels:['이번달 도박 예산'],datasets:[{label:'사용',data:[used],backgroundColor:'#ef4444',borderRadius:6,borderSkipped:false},{label:'남은',data:[left],backgroundColor:'#22c472',borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#c4c4d0',font:{size:11}},grid:{display:false}},y:{max:20,ticks:{color:'#c4c4d0',font:{size:10},callback:v=>'$'+v},grid:{color:'#f0f0f5'}}},indexAxis:'y'}});
+}
+
+renderBetting();
+</script>
+</body>
+</html>
