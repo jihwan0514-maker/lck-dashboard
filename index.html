@@ -141,6 +141,8 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
 .tier-filter{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
 .filter-btn{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text2);font-family:'Inter',sans-serif;transition:all 0.2s;box-shadow:var(--shadow)}
 .filter-btn.active{background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(59,130,246,0.3)}
+.period-btn{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:'Inter',sans-serif;transition:all 0.2s}
+.period-btn.active{background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;border-color:transparent}
 
 /* 메모/일기 */
 .memo-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
@@ -230,7 +232,17 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
       <div id="deposit-list"></div>
     </div>
     <div class="two-col">
-      <div class="section"><div class="section-title" style="margin-bottom:12px">날짜별 손익</div><div class="chart-wrap" style="height:160px"><canvas id="ch-daily"></canvas></div></div>
+      <div class="section">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div class="section-title">날짜별 손익</div>
+          <div style="display:flex;gap:4px">
+            <button class="period-btn active" data-period="day" onclick="setPeriod('day',this)">1일</button>
+            <button class="period-btn" data-period="week" onclick="setPeriod('week',this)">1주</button>
+            <button class="period-btn" data-period="month" onclick="setPeriod('month',this)">1달</button>
+          </div>
+        </div>
+        <div class="chart-wrap" style="height:160px"><canvas id="ch-daily"></canvas></div>
+      </div>
       <div class="section"><div class="section-title" style="margin-bottom:12px">자금 변화</div><div class="chart-wrap" style="height:160px"><canvas id="ch-funds"></canvas></div></div>
     </div>
     <div class="two-col">
@@ -515,7 +527,38 @@ function delMemo(i){
 function renderMemos(){
   const ml=document.getElementById('memo-list');
   if(!memos.length){ml.innerHTML='<div class="empty" style="background:var(--bg2);border-radius:var(--radius);padding:32px;border:1px solid var(--border)">아직 기록이 없어요 ✏️</div>';return;}
-  const f$=n=>'$'+Math.abs(n).toFixed(2);
+  let currentPeriod='day';
+
+function setPeriod(p,btn){
+  currentPeriod=p;
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBetting();
+}
+
+// 날짜를 기간별로 그룹핑
+function groupByPeriod(dm, period){
+  const grouped={};
+  Object.entries(dm).forEach(([d,v])=>{
+    let key;
+    if(period==='day'){
+      key=d;
+    } else if(period==='week'){
+      // 해당 날짜가 속한 주의 월요일
+      const dt=new Date(d);
+      const day=dt.getDay();
+      const diff=dt.getDate()-day+(day===0?-6:1);
+      const mon=new Date(dt.setDate(diff));
+      key=mon.toISOString().split('T')[0];
+    } else if(period==='month'){
+      key=d.slice(0,7); // YYYY-MM
+    }
+    grouped[key]=(grouped[key]||0)+v;
+  });
+  return grouped;
+}
+
+const f$=n=>'$'+Math.abs(n).toFixed(2);
   const fp=n=>(n>=0?'+':'-')+f$(n);
   ml.innerHTML=memos.map((m,i)=>{
     const tc=m.tag==='win'?'tag-win':m.tag==='lose'?'tag-lose':'tag-neutral';
@@ -533,6 +576,37 @@ function renderMemos(){
       ${m.pnl!==0?`<div class="memo-pnl" style="color:${pc}">${fp(m.pnl)}</div>`:''}
     </div>`;
   }).join('');
+}
+
+let currentPeriod='day';
+
+function setPeriod(p,btn){
+  currentPeriod=p;
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBetting();
+}
+
+// 날짜를 기간별로 그룹핑
+function groupByPeriod(dm, period){
+  const grouped={};
+  Object.entries(dm).forEach(([d,v])=>{
+    let key;
+    if(period==='day'){
+      key=d;
+    } else if(period==='week'){
+      // 해당 날짜가 속한 주의 월요일
+      const dt=new Date(d);
+      const day=dt.getDay();
+      const diff=dt.getDate()-day+(day===0?-6:1);
+      const mon=new Date(dt.setDate(diff));
+      key=mon.toISOString().split('T')[0];
+    } else if(period==='month'){
+      key=d.slice(0,7); // YYYY-MM
+    }
+    grouped[key]=(grouped[key]||0)+v;
+  });
+  return grouped;
 }
 
 const f$=n=>'$'+Math.abs(n).toFixed(2);
@@ -655,8 +729,10 @@ function renderBetting(){
   const {grid,tick}=gc();
   // 날짜별 베팅 손익 집계
   const dm={};[...bets].sort((a,b)=>a.d.localeCompare(b.d)).forEach(b=>{dm[b.d]=(dm[b.d]||0)+b.pnl});
-  const dates=Object.keys(dm).sort();
-  const dpnl=dates.map(d=>+dm[d].toFixed(2));
+  // 기간별 그룹핑 (1일/1주/1달)
+  const grouped=groupByPeriod(dm,currentPeriod);
+  const dates=Object.keys(grouped).sort();
+  const dpnl=dates.map(d=>+grouped[d].toFixed(2));
   // 자금 그래프: 베팅 날짜 + deposit 날짜 합쳐서 시간순으로 자금 변화 추적
   const depositMap={};
   deposits.filter(d=>d.id!=='init').forEach(d=>{depositMap[d.d]=(depositMap[d.d]||0)+d.amt;});
@@ -676,7 +752,7 @@ function renderBetting(){
   cD=new Chart(document.getElementById('ch-daily'),{type:'bar',data:{labels:dates.length?dates:['없음'],datasets:[{data:dates.length?dpnl:[0],backgroundColor:dpnl.map(v=>v>=0?'rgba(34,196,114,0.8)':'rgba(239,68,68,0.8)'),borderRadius:6,borderSkipped:false,borderWidth:0}]},options:{...base,animation:{duration:600,easing:'easeOutQuart'}}});
 
   if(cF)cF.destroy();
-  cF=new Chart(document.getElementById('ch-funds'),{type:'line',data:{labels:fDates.length?fDates:['시작'],datasets:[{data:fDates.length?fv:[totalDeposit()],borderColor:'#3b82f6',backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,160);g.addColorStop(0,'rgba(59,130,246,0.15)');g.addColorStop(1,'rgba(59,130,246,0)');return g;},borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#fff',pointBorderColor:'#3b82f6',pointBorderWidth:2,fill:true,tension:0.4}]},options:{...base,animation:{duration:600,easing:'easeOutQuart'}}});
+  cF=new Chart(document.getElementById('ch-funds'),{type:'line',data:{labels:fDates.length?fDates:['시작'],datasets:[{data:fDates.length?fv:[totalDeposit()],borderColor:'#3b82f6',backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,160);g.addColorStop(0,'rgba(59,130,246,0.15)');g.addColorStop(1,'rgba(59,130,246,0)');return g;},borderWidth:2.5,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:'#fff',pointHoverBorderColor:'#3b82f6',pointHoverBorderWidth:2,fill:true,tension:0.5}]},options:{...base,animation:{duration:600,easing:'easeOutQuart'}}});
 
   if(cP)cP.destroy();
   cP=new Chart(document.getElementById('ch-plat'),{type:'bar',data:{labels:['PrizePicks','Kalshi'],datasets:[{data:[ppP,kP],backgroundColor:['rgba(59,130,246,0.8)','rgba(139,92,246,0.8)'],borderRadius:8,borderSkipped:false,borderWidth:0}]},options:{...base,animation:{duration:600}}});
