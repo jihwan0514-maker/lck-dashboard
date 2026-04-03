@@ -8,8 +8,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Tracker">
 <meta name="application-name" content="Tracker">
-<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAADsQAAA7EB9YPtSQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZxivKe8AAAckSURBVHic7Z1/bBRFGIef3b22tPRX+VEohYJARYoiYBEUUdACIiKCClgRBSyKiqAIIiIiIooiKiKKIiIiIiIiIiIiIoqiqAiKqIiIqIiIiIiIiIiIiIiIiIiIiIiIiIiIiA==">
-<link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%233b82f6'/><rect width='180' height='180' rx='40' fill='url(%23g)'/><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%233b82f6'/><stop offset='1' stop-color='%238b5cf6'/></linearGradient></defs><text y='140' x='20' font-size='130'>🏆</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23111'/><text y='26' x='4' font-size='22'>🏆</text></svg>">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23111111'/><g transform='translate(90,90)'><path d='M0-52 C-28-52-50-30-50-2 C-50 18-38 34-20 42 L-20 54 L-30 54 L-30 64 L30 64 L30 54 L20 54 L20 42 C38 34 50 18 50-2 C50-30 28-52 0-52Z' fill='%23ffffff'/><path d='M-50-2 L-68-2 L-68 20 C-68 36-60 44-50 44 L-40 44 C-44 36-46 24-46-2Z' fill='%23cccccc'/><path d='M50-2 L68-2 L68 20 C68 36 60 44 50 44 L40 44 C44 36 46 24 46-2Z' fill='%23cccccc'/><rect x='-30' y='64' width='60' height='10' rx='5' fill='%23ffffff'/></g></svg>">
 <meta name="theme-color" content="#ffffff" id="theme-color-meta">
 <link rel="manifest" href="data:application/json,{%22name%22:%22Tracker%22,%22short_name%22:%22Tracker%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23f7f8fa%22,%22theme_color%22:%22%23ffffff%22}">
 <title>Tracker</title>
@@ -38,7 +38,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 /* 상단바 */
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
 .topbar-left{display:flex;align-items:center;gap:10px}
-.app-icon{width:36px;height:36px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(59,130,246,0.3)}
+.app-icon{width:36px;height:36px;background:#111;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.25);flex-shrink:0}
+.app-icon svg{width:22px;height:22px}
 .app-title{font-size:18px;font-weight:700;letter-spacing:-0.5px}
 .app-sub{font-size:11px;color:var(--text2);margin-top:1px}
 .theme-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif;transition:all 0.2s;box-shadow:var(--shadow)}
@@ -163,7 +164,7 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
 /* 구분선 */
 .divider{height:1px;background:var(--border2);margin:14px 0}
 
-/* 하단 여백 (모바일 탭바 대응) */
+/* 하단 여백 */
 .bottom-safe{height:env(safe-area-inset-bottom,0px)}
 </style>
 </head>
@@ -171,7 +172,15 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
 <div class="app">
   <div class="topbar">
     <div class="topbar-left">
-      <div class="app-icon">🏆</div>
+      <!-- 검정 배경 흰색 트로피 SVG 아이콘 -->
+      <div class="app-icon">
+        <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11 2C7.5 2 5 4.5 5 7.5C5 10 6.5 12 8.8 12.8L8.8 14.5L7 14.5L7 16L15 16L15 14.5L13.2 14.5L13.2 12.8C15.5 12 17 10 17 7.5C17 4.5 14.5 2 11 2Z" fill="white"/>
+          <path d="M5 7.5L3 7.5L3 10C3 12 4 13 5.5 13L6.5 13C5.8 11.5 5.5 9.8 5.5 7.5Z" fill="#cccccc"/>
+          <path d="M17 7.5L19 7.5L19 10C19 12 18 13 16.5 13L15.5 13C16.2 11.5 16.5 9.8 16.5 7.5Z" fill="#cccccc"/>
+          <rect x="7" y="16" width="8" height="2" rx="1" fill="white"/>
+        </svg>
+      </div>
       <div>
         <div class="app-title">Tracker</div>
         <div class="app-sub">LCK 2026 · Rounds 1-2</div>
@@ -337,7 +346,8 @@ async function loadAll(){
     bets=b||[];
     memos=(m||[]).reverse();
     if(bg&&bg.length>0){budget={...bg[0]};}
-    renderBetting();    renderBudget();
+    renderBetting();
+    renderBudget();
   }catch(e){
     bets=JSON.parse(localStorage.getItem('lck_v2')||'[]');
     memos=JSON.parse(localStorage.getItem('lck_memos')||'[]');
@@ -467,6 +477,7 @@ async function addBet(){
   const pnl=rs==='성공'?rt-bt:rs==='실패'?-bt:0;
   const newBet={d,pl,pk,dr,bt,rt,rs,pnl};
   await dbInsert('bets',newBet);
+  // DB에서 최신 목록을 다시 불러옴 (id 포함)
   bets=await dbGet('bets');
   document.getElementById('i-pick').value='';
   document.getElementById('i-bet').value='';
@@ -474,13 +485,16 @@ async function addBet(){
   renderBetting();
 }
 
+// ✅ 수정: 배열 인덱스 대신 DB id로 처리
 async function updateRes(id,v){
   const b=bets.find(x=>x.id===id);
   if(!b)return;
-  b.rs=v;b.pnl=v==='성공'?b.rt-b.bt:v==='실패'?-b.bt:0;
+  b.rs=v;
+  b.pnl=v==='성공'?b.rt-b.bt:v==='실패'?-b.bt:0;
   await dbUpdate('bets',id,{rs:b.rs,pnl:b.pnl});
   renderBetting();
 }
+
 async function updateRet(id,v){
   const b=bets.find(x=>x.id===id);
   if(!b)return;
@@ -489,9 +503,11 @@ async function updateRet(id,v){
   await dbUpdate('bets',id,{rt:b.rt,pnl:b.pnl});
   renderBetting();
 }
+
 async function delBet(id){
   if(confirm('삭제?')){
     await dbDelete('bets',id);
+    // ✅ 수정: DB에서 다시 불러와서 bets 배열 갱신
     bets=await dbGet('bets');
     renderBetting();
   }
@@ -527,14 +543,32 @@ function renderBetting(){
   document.getElementById('c-wrsub').textContent=settled>0?`${wins}승 ${losses}패`:'';
   document.getElementById('c-total').textContent=bets.length+'회';
   document.getElementById('c-totalsub').textContent=pend>0?`⏳ ${pend}개 진행중`:'';
+
   const tb=document.getElementById('t-body');
-  if(!bets.length){tb.innerHTML='<tr><td colspan="9" class="empty">아직 베팅 기록이 없습니다</td></tr>';}
-  else{tb.innerHTML=[...bets].reverse().map((b,ri)=>{
-    const realIdx=bets.length-1-ri;
-    const pb=b.pl==='PrizePicks'?'bp':'bk';
-    const pc=b.pnl>0?'#22c472':b.pnl<0?'#ef4444':'var(--text2)';
-    return`<tr><td style="color:var(--text2);font-size:11px">${b.d}</td><td><span class="badge ${pb}">${b.pl}</span></td><td style="font-weight:500;font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.pk}</td><td style="color:var(--text2);font-size:11px">${b.dr}</td><td style="font-size:11px">${b.bt.toFixed(2)}</td><td><input type="number" value="${b.rt.toFixed(2)}" step="0.01" onchange="updateRet(${realIdx},this.value)"/></td><td style="color:${pc};font-weight:700;font-size:11px">${fp(b.pnl)}</td><td><select onchange="updateRes(${realIdx},this.value)"><option value="진행중" ${b.rs==='진행중'?'selected':''}>⏳</option><option value="성공" ${b.rs==='성공'?'selected':''}>✅</option><option value="실패" ${b.rs==='실패'?'selected':''}>❌</option></select></td><td><button class="del-btn" onclick="delBet(${realIdx})">✕</button></td></tr>`;
-  }).join('');}
+  if(!bets.length){
+    tb.innerHTML='<tr><td colspan="9" class="empty">아직 베팅 기록이 없습니다</td></tr>';
+  } else {
+    // ✅ 수정: b.id (DB 실제 id)를 onclick에 전달 — 인덱스 계산 불필요
+    tb.innerHTML=[...bets].reverse().map(b=>{
+      const pb=b.pl==='PrizePicks'?'bp':'bk';
+      const pc=b.pnl>0?'#22c472':b.pnl<0?'#ef4444':'var(--text2)';
+      return`<tr>
+        <td style="color:var(--text2);font-size:11px">${b.d}</td>
+        <td><span class="badge ${pb}">${b.pl}</span></td>
+        <td style="font-weight:500;font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.pk}</td>
+        <td style="color:var(--text2);font-size:11px">${b.dr}</td>
+        <td style="font-size:11px">${b.bt.toFixed(2)}</td>
+        <td><input type="number" value="${b.rt.toFixed(2)}" step="0.01" onchange="updateRet(${b.id},this.value)"/></td>
+        <td style="color:${pc};font-weight:700;font-size:11px">${fp(b.pnl)}</td>
+        <td><select onchange="updateRes(${b.id},this.value)">
+          <option value="진행중" ${b.rs==='진행중'?'selected':''}>⏳</option>
+          <option value="성공" ${b.rs==='성공'?'selected':''}>✅</option>
+          <option value="실패" ${b.rs==='실패'?'selected':''}>❌</option>
+        </select></td>
+        <td><button class="del-btn" onclick="delBet(${b.id})">✕</button></td>
+      </tr>`;
+    }).join('');
+  }
 
   const {grid,tick}=gc();
   const dm={};[...bets].sort((a,b)=>a.d.localeCompare(b.d)).forEach(b=>{dm[b.d]=(dm[b.d]||0)+b.pnl});
@@ -572,6 +606,7 @@ function renderBudget(){
 }
 
 renderBetting();
+loadAll();
 </script>
 </body>
 </html>
