@@ -474,20 +474,24 @@ async function addBet(){
   renderBetting();
 }
 
-async function updateRes(i,v){
-  bets[i].rs=v;bets[i].pnl=v==='성공'?bets[i].rt-bets[i].bt:v==='실패'?-bets[i].bt:0;
-  await dbUpdate('bets',bets[i].id,{rs:bets[i].rs,pnl:bets[i].pnl});
+async function updateRes(id,v){
+  const b=bets.find(x=>x.id===id);
+  if(!b)return;
+  b.rs=v;b.pnl=v==='성공'?b.rt-b.bt:v==='실패'?-b.bt:0;
+  await dbUpdate('bets',id,{rs:b.rs,pnl:b.pnl});
   renderBetting();
 }
-async function updateRet(i,v){
-  bets[i].rt=parseFloat(v)||0;
-  if(bets[i].rs==='성공')bets[i].pnl=bets[i].rt-bets[i].bt;
-  await dbUpdate('bets',bets[i].id,{rt:bets[i].rt,pnl:bets[i].pnl});
+async function updateRet(id,v){
+  const b=bets.find(x=>x.id===id);
+  if(!b)return;
+  b.rt=parseFloat(v)||0;
+  if(b.rs==='성공')b.pnl=b.rt-b.bt;
+  await dbUpdate('bets',id,{rt:b.rt,pnl:b.pnl});
   renderBetting();
 }
-async function delBet(i){
+async function delBet(id){
   if(confirm('삭제?')){
-    await dbDelete('bets',bets[i].id);
+    await dbDelete('bets',id);
     bets=await dbGet('bets');
     renderBetting();
   }
@@ -525,11 +529,11 @@ function renderBetting(){
   document.getElementById('c-totalsub').textContent=pend>0?`⏳ ${pend}개 진행중`:'';
   const tb=document.getElementById('t-body');
   if(!bets.length){tb.innerHTML='<tr><td colspan="9" class="empty">아직 베팅 기록이 없습니다</td></tr>';}
-  else{tb.innerHTML=[...bets].map((b,ri)=>{
-    const i=bets.length-1-ri;
+  else{tb.innerHTML=[...bets].reverse().map((b,ri)=>{
+    const realIdx=bets.length-1-ri;
     const pb=b.pl==='PrizePicks'?'bp':'bk';
     const pc=b.pnl>0?'#22c472':b.pnl<0?'#ef4444':'var(--text2)';
-    return`<tr><td style="color:var(--text2);font-size:11px">${b.d}</td><td><span class="badge ${pb}">${b.pl}</span></td><td style="font-weight:500;font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.pk}</td><td style="color:var(--text2);font-size:11px">${b.dr}</td><td style="font-size:11px">$${b.bt.toFixed(2)}</td><td><input type="number" value="${b.rt.toFixed(2)}" step="0.01" onchange="updateRet(${i},this.value)"/></td><td style="color:${pc};font-weight:700;font-size:11px">${fp(b.pnl)}</td><td><select onchange="updateRes(${i},this.value)"><option value="진행중" ${b.rs==='진행중'?'selected':''}>⏳</option><option value="성공" ${b.rs==='성공'?'selected':''}>✅</option><option value="실패" ${b.rs==='실패'?'selected':''}>❌</option></select></td><td><button class="del-btn" onclick="delBet(${i})">✕</button></td></tr>`;
+    return`<tr><td style="color:var(--text2);font-size:11px">${b.d}</td><td><span class="badge ${pb}">${b.pl}</span></td><td style="font-weight:500;font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.pk}</td><td style="color:var(--text2);font-size:11px">${b.dr}</td><td style="font-size:11px">${b.bt.toFixed(2)}</td><td><input type="number" value="${b.rt.toFixed(2)}" step="0.01" onchange="updateRet(${realIdx},this.value)"/></td><td style="color:${pc};font-weight:700;font-size:11px">${fp(b.pnl)}</td><td><select onchange="updateRes(${realIdx},this.value)"><option value="진행중" ${b.rs==='진행중'?'selected':''}>⏳</option><option value="성공" ${b.rs==='성공'?'selected':''}>✅</option><option value="실패" ${b.rs==='실패'?'selected':''}>❌</option></select></td><td><button class="del-btn" onclick="delBet(${realIdx})">✕</button></td></tr>`;
   }).join('');}
 
   const {grid,tick}=gc();
