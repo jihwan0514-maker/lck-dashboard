@@ -402,7 +402,7 @@ function renderMemos(){
   const fp=n=>(n>=0?'+':'-')+f$(n);
   ml.innerHTML=memos.map((m,i)=>{
     const tc=m.tag==='win'?'tag-win':m.tag==='lose'?'tag-lose':'tag-neutral';
-    const tl=m.tag==='win'?'✅ 수익':'❌ 손실':'📝 일반';
+    const tl=m.tag==='win'?'✅ 수익':m.tag==='lose'?'❌ 손실':'📝 일반';
     const pc=m.pnl>0?'#22c472':m.pnl<0?'#ef4444':'var(--text2)';
     return`<div class="memo-item">
       <div class="memo-header">
