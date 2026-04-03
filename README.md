@@ -43,7 +43,7 @@ lck-dashboard/
 
 ---
 
-## 💾 localStorage 키
+## 💾 Supabase 연결 정보
 
 ```javascript
 const SB_URL='https://frewhoybgoclieoigpxy.supabase.co';
@@ -51,6 +51,10 @@ const SB_KEY='eyJhbGci...'; // anon public key
 ```
 
 테이블 3개: `bets` / `memos` / `budget`
+
+> ⚠️ **주의:** Supabase `bets` 테이블의 `id` 컬럼은 **UUID** 타입.
+> 코드에서 id를 다룰 때 반드시 `data-id` 속성 + `dataset.id` 방식으로 읽어야 함.
+> `onclick="func(${b.id})"` 인라인 방식은 UUID가 깨져서 삭제/수정이 안 됨.
 
 ---
 
@@ -92,6 +96,7 @@ const SB_KEY='eyJhbGci...'; // anon public key
 - 카드/섹션 그림자 + 둥근 모서리
 - 입력창 focus glow 효과
 - 차트 부드러운 애니메이션
+- **앱 아이콘:** 검정 배경 + 흰색 SVG 트로피 (이모지 아님)
 
 ---
 
@@ -140,6 +145,35 @@ const SB_KEY='eyJhbGci...'; // anon public key
 > "LCK 대시보드 업데이트해줘.
 > GitHub: https://github.com/jihwan0514-maker/lck-dashboard
 > 변경 내용: [여기에 원하는 것]"
+
+---
+
+## 🐛 버그 수정 기록
+
+### v2 — 삭제/수정 버그 + 아이콘 수정
+**증상:**
+- 베팅 삭제 눌러도 아무 일 없음
+- 새로고침하면 삭제한 게 다시 나타남
+- 새 베팅 추가하면 삭제한 것까지 포함해서 전부 다시 나옴
+
+**원인:**
+Supabase `id` 컬럼이 UUID 타입인데, `onclick="delBet(${b.id})"` 이렇게 HTML 인라인에 직접 넣으면 UUID가 JavaScript에서 연산식으로 해석되어 깨짐 → DB에 잘못된 id가 전달되어 삭제/수정 실패
+
+**수정:**
+```javascript
+// ❌ 이전 (UUID가 깨짐)
+<button onclick="delBet(${b.id})">✕</button>
+
+// ✅ 수정 (data-id로 안전하게 저장 후 읽기)
+<tr data-id="${b.id}">
+  <button class="del-btn">✕</button>
+</tr>
+
+row.querySelector('.del-btn').addEventListener('click', () => delBet(id));
+// id = row.dataset.id 로 읽음
+```
+
+**아이콘:** 이모지 트로피 → 검정 배경 흰색 SVG 트로피로 교체
 
 ---
 
