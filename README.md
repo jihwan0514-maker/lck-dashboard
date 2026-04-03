@@ -2,18 +2,18 @@
 
 LCK 경기 베팅 트래커 + 예산 관리 + 팀 분석 + 일일 기록 올인원 앱
 
-**🌐 사이트:** https://lively-crepe-e0ddd5.netlify.app
+**🌐 사이트:** https://jihwan0514-maker.github.io/lck-dashboard
 **📦 GitHub:** https://github.com/jihwan0514-maker/lck-dashboard
 
 ---
 
 ## 📱 앱 설치 (PWA)
 
-**아이폰:**
+**아이폰 (Safari):**
 1. Safari에서 사이트 접속
 2. 하단 공유 버튼 (□↑) 클릭
 3. **홈 화면에 추가** → 이름: `Tracker`
-4. 앱처럼 전체화면으로 열림
+4. ⚠️ iOS 26 베타는 PWA 흰 화면 버그 있음 → Safari 북마크로 대신 사용
 
 **안드로이드:**
 1. Chrome에서 사이트 접속
@@ -37,20 +37,20 @@ lck-dashboard/
 - HTML / CSS / JavaScript (순수 바닐라)
 - Chart.js 4.4.1 (차트)
 - Inter 폰트 (Google Fonts)
-- localStorage (브라우저 데이터 저장)
-- Netlify (호스팅) + GitHub (자동 배포 연결)
-- PWA (홈 화면 앱 설치 지원)
+- Supabase (클라우드 DB — PC + 폰 데이터 공유)
+- GitHub Pages (호스팅 — 완전 무료 + 영구적)
+- GitHub (코드 관리 + 자동 배포)
 
 ---
 
 ## 💾 localStorage 키
 
 ```javascript
-localStorage.getItem('lck_v2')      // 베팅 기록
-localStorage.getItem('lck_budget')  // 예산 정보
-localStorage.getItem('lck_memos')   // 일일 기록/메모
-localStorage.getItem('lck_theme')   // 다크/라이트 설정
+const SB_URL='https://frewhoybgoclieoigpxy.supabase.co';
+const SB_KEY='eyJhbGci...'; // anon public key
 ```
+
+테이블 3개: `bets` / `memos` / `budget`
 
 ---
 
@@ -133,7 +133,7 @@ localStorage.getItem('lck_theme')   // 다크/라이트 설정
 2. 연필 아이콘 (Edit) 클릭
 3. 전체 선택 (`Ctrl+A`) → 삭제 → 새 코드 붙여넣기
 4. **Commit changes** 클릭
-5. Netlify 자동 배포 (1~2분)
+5. GitHub Pages 자동 배포 (1~2분)
 
 ### Claude한테 업데이트 요청할 때
 새 대화에서 이렇게 말하면 됨:
