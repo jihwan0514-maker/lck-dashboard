@@ -219,6 +219,16 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
         <button class="btn btn-primary" onclick="addBet()">+ 추가</button>
       </div>
     </div>
+    <div class="section">
+      <div class="section-header"><div class="section-title">💵 입금 (Deposit)</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:10px">
+        <input type="date" id="d-date"/>
+        <div class="input-wrap"><span class="prefix">$</span><input type="number" id="d-amt" placeholder="입금액" step="0.01"/></div>
+        <input type="text" id="d-note" placeholder="메모 (예: PrizePicks 충전)"/>
+        <button class="btn btn-primary" style="width:auto;padding:10px 18px" onclick="addDeposit()">+ 입금</button>
+      </div>
+      <div id="deposit-list"></div>
+    </div>
     <div class="two-col">
       <div class="section"><div class="section-title" style="margin-bottom:12px">날짜별 손익</div><div class="chart-wrap" style="height:160px"><canvas id="ch-daily"></canvas></div></div>
       <div class="section"><div class="section-title" style="margin-bottom:12px">자금 변화</div><div class="chart-wrap" style="height:160px"><canvas id="ch-funds"></canvas></div></div>
@@ -336,9 +346,53 @@ async function dbDelete(table,id){
 let bets=[];
 let budget={living:551,gamble:79,refund:49,id:null};
 let memos=[];
+let deposits=JSON.parse(localStorage.getItem('lck_deposits')||'[{"id":"init","amt":20,"d":"2026-01-01","note":"초기 자금"}]');
 let isDark=localStorage.getItem('lck_theme')==='dark';
-const START=20;
 let cD,cF,cP,cW,cB,cG;
+function totalDeposit(){return deposits.reduce((s,d)=>s+d.amt,0);}
+function saveDeposits(){localStorage.setItem('lck_deposits',JSON.stringify(deposits));}
+
+function addDeposit(){
+  const d=document.getElementById('d-date').value;
+  const amt=parseFloat(document.getElementById('d-amt').value);
+  const note=document.getElementById('d-note').value.trim()||'입금';
+  if(!d||isNaN(amt)||amt<=0)return;
+  budget.gamble=Math.max(0,+(budget.gamble-amt).toFixed(2));
+  localStorage.setItem('lck_budget',JSON.stringify(budget));
+  deposits.push({id:Date.now().toString(),amt,d,note});
+  saveDeposits();
+  document.getElementById('d-amt').value='';
+  document.getElementById('d-note').value='';
+  renderBetting();
+  if(document.getElementById('page-budget').classList.contains('active'))renderBudget();
+}
+
+function delDeposit(id){
+  const dep=deposits.find(d=>d.id===id);
+  if(!dep||!confirm('입금 기록 삭제?'))return;
+  budget.gamble=+(budget.gamble+dep.amt).toFixed(2);
+  localStorage.setItem('lck_budget',JSON.stringify(budget));
+  deposits=deposits.filter(d=>d.id!==id);
+  saveDeposits();
+  renderBetting();
+}
+
+function renderDeposits(){
+  const el=document.getElementById('deposit-list');
+  const rows=deposits.map(dep=>`
+    <div style="display:flex;align-items:center;gap:8px;background:var(--bg3);border-radius:8px;padding:7px 10px;font-size:12px">
+      <span style="color:var(--text2);min-width:80px">${dep.d}</span>
+      <span style="font-weight:700;color:#22c472;min-width:60px">+$${dep.amt.toFixed(2)}</span>
+      <span style="color:var(--text3);flex:1">${dep.note}</span>
+      ${dep.id==='init'?'<span style="font-size:10px;color:var(--text2)">초기</span>':`<button class="del-btn" data-depid="${dep.id}">✕</button>`}
+    </div>`).join('');
+  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:5px">${rows}
+    <div style="font-size:11px;color:var(--text2);padding:4px 2px">총 입금: <strong style="color:var(--text)">$${totalDeposit().toFixed(2)}</strong></div>
+  </div>`;
+  el.querySelectorAll('.del-btn[data-depid]').forEach(btn=>{
+    btn.addEventListener('click',()=>delDeposit(btn.dataset.depid));
+  });
+}
 
 async function loadAll(){
   try{
@@ -358,6 +412,7 @@ async function loadAll(){
 const today=new Date().toISOString().split('T')[0];
 document.getElementById('i-date').value=today;
 document.getElementById('m-date').value=today;
+document.getElementById('d-date').value=today;
 
 if(isDark){document.body.classList.add('dark');document.getElementById('theme-btn').textContent='☀️ 라이트';document.getElementById('theme-color-meta').setAttribute('content','#0c0c14');}
 
@@ -533,10 +588,11 @@ function renderBetting(){
   const pend=bets.filter(b=>b.rs==='진행중').length;
   const settled=wins+losses;
   const pnl=bets.reduce((s,b)=>s+b.pnl,0);
-  const funds=START+pnl;
+  const start=totalDeposit();
+  const funds=start+pnl;
   const wr=settled>0?Math.round(wins/settled*100):0;
   document.getElementById('c-funds').textContent=f$(funds);
-  document.getElementById('c-funds').className='card-value '+(funds>=START?'cv-default':'cv-red');
+  document.getElementById('c-funds').className='card-value '+(funds>=start?'cv-default':'cv-red');
   const pe=document.getElementById('c-pnl');
   pe.textContent=fp(pnl);pe.className='card-value '+(pnl>=0?'cv-green':'cv-red');
   document.getElementById('c-wr').textContent=wr+'%';
@@ -578,11 +634,12 @@ function renderBetting(){
     });
   }
 
+  renderDeposits();
   const {grid,tick}=gc();
   const dm={};[...bets].sort((a,b)=>a.d.localeCompare(b.d)).forEach(b=>{dm[b.d]=(dm[b.d]||0)+b.pnl});
   const dates=Object.keys(dm).sort();
   const dpnl=dates.map(d=>+dm[d].toFixed(2));
-  let run=START;const fv=dates.map(d=>{run+=dm[d];return+run.toFixed(2)});
+  let run=totalDeposit();const fv=dates.map(d=>{run+=dm[d];return+run.toFixed(2)});
   const ppP=+bets.filter(b=>b.pl==='PrizePicks').reduce((s,b)=>s+b.pnl,0).toFixed(2);
   const kP=+bets.filter(b=>b.pl==='Kalshi').reduce((s,b)=>s+b.pnl,0).toFixed(2);
   const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tick,font:{size:9},maxRotation:0},grid:{color:grid,lineWidth:1}},y:{ticks:{color:tick,font:{size:9},callback:v=>'$'+v},grid:{color:grid,lineWidth:1}}}};
@@ -591,7 +648,7 @@ function renderBetting(){
   cD=new Chart(document.getElementById('ch-daily'),{type:'bar',data:{labels:dates.length?dates:['없음'],datasets:[{data:dates.length?dpnl:[0],backgroundColor:dpnl.map(v=>v>=0?'rgba(34,196,114,0.8)':'rgba(239,68,68,0.8)'),borderRadius:6,borderSkipped:false,borderWidth:0}]},options:{...base,animation:{duration:600,easing:'easeOutQuart'}}});
 
   if(cF)cF.destroy();
-  cF=new Chart(document.getElementById('ch-funds'),{type:'line',data:{labels:dates.length?dates:['시작'],datasets:[{data:dates.length?fv:[START],borderColor:'#3b82f6',backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,160);g.addColorStop(0,'rgba(59,130,246,0.15)');g.addColorStop(1,'rgba(59,130,246,0)');return g;},borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#fff',pointBorderColor:'#3b82f6',pointBorderWidth:2,fill:true,tension:0.4}]},options:{...base,animation:{duration:600,easing:'easeOutQuart'}}});
+  cF=new Chart(document.getElementById('ch-funds'),{type:'line',data:{labels:dates.length?dates:['시작'],datasets:[{data:dates.length?fv:[totalDeposit()],borderColor:'#3b82f6',backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,160);g.addColorStop(0,'rgba(59,130,246,0.15)');g.addColorStop(1,'rgba(59,130,246,0)');return g;},borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#fff',pointBorderColor:'#3b82f6',pointBorderWidth:2,fill:true,tension:0.4}]},options:{...base,animation:{duration:600,easing:'easeOutQuart'}}});
 
   if(cP)cP.destroy();
   cP=new Chart(document.getElementById('ch-plat'),{type:'bar',data:{labels:['PrizePicks','Kalshi'],datasets:[{data:[ppP,kP],backgroundColor:['rgba(59,130,246,0.8)','rgba(139,92,246,0.8)'],borderRadius:8,borderSkipped:false,borderWidth:0}]},options:{...base,animation:{duration:600}}});
