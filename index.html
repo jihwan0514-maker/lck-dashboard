@@ -305,12 +305,45 @@ td input[type=number]{background:var(--bg3);border:1px solid var(--border);borde
 </div>
 
 <script>
-let bets=JSON.parse(localStorage.getItem('lck_v2')||'[]');
-let budget=JSON.parse(localStorage.getItem('lck_budget')||'{"living":551,"gamble":79,"refund":49}');
-let memos=JSON.parse(localStorage.getItem('lck_memos')||'[]');
+const SB_URL='https://frewhoybgoclieoigpxy.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZXdob3liZ29jbGllb2lncHh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxOTE4NDQsImV4cCI6MjA5MDc2Nzg0NH0.dPPUX0vCqVbAcGHfN2yFZFvDwl9buRqkmyAJ5ggR-1M';
+const sb=(table)=>`${SB_URL}/rest/v1/${table}`;
+const headers={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`};
+
+async function dbGet(table,select='*'){
+  const r=await fetch(`${sb(table)}?select=${select}&order=created_at.asc`,{headers});
+  return r.json();
+}
+async function dbInsert(table,data){
+  await fetch(sb(table),{method:'POST',headers:{...headers,'Prefer':'return=minimal'},body:JSON.stringify(data)});
+}
+async function dbUpdate(table,id,data){
+  await fetch(`${sb(table)}?id=eq.${id}`,{method:'PATCH',headers:{...headers,'Prefer':'return=minimal'},body:JSON.stringify(data)});
+}
+async function dbDelete(table,id){
+  await fetch(`${sb(table)}?id=eq.${id}`,{method:'DELETE',headers});
+}
+
+let bets=[];
+let budget={living:551,gamble:79,refund:49,id:null};
+let memos=[];
 let isDark=localStorage.getItem('lck_theme')==='dark';
 const START=20;
 let cD,cF,cP,cW,cB,cG;
+
+async function loadAll(){
+  try{
+    const [b,m,bg]=await Promise.all([dbGet('bets'),dbGet('memos','*'),dbGet('budget')]);
+    bets=b||[];
+    memos=(m||[]).reverse();
+    if(bg&&bg.length>0){budget={...bg[0]};}
+    renderBetting();    renderBudget();
+  }catch(e){
+    bets=JSON.parse(localStorage.getItem('lck_v2')||'[]');
+    memos=JSON.parse(localStorage.getItem('lck_memos')||'[]');
+    renderBetting();
+  }
+}
 
 const today=new Date().toISOString().split('T')[0];
 document.getElementById('i-date').value=today;
@@ -423,7 +456,7 @@ function renderMemos(){
 const f$=n=>'$'+Math.abs(n).toFixed(2);
 const fp=n=>(n>=0?'+':'-')+f$(n);
 
-function addBet(){
+async function addBet(){
   const d=document.getElementById('i-date').value;
   const pl=document.getElementById('i-plat').value;
   const pk=document.getElementById('i-pick').value||'-';
@@ -432,17 +465,33 @@ function addBet(){
   const rt=parseFloat(document.getElementById('i-ret').value)||0;
   const rs=document.getElementById('i-res').value;
   const pnl=rs==='성공'?rt-bt:rs==='실패'?-bt:0;
-  bets.push({d,pl,pk,dr,bt,rt,rs,pnl});
-  localStorage.setItem('lck_v2',JSON.stringify(bets));
+  const newBet={d,pl,pk,dr,bt,rt,rs,pnl};
+  await dbInsert('bets',newBet);
+  bets=await dbGet('bets');
   document.getElementById('i-pick').value='';
   document.getElementById('i-bet').value='';
   document.getElementById('i-ret').value='';
   renderBetting();
 }
 
-function updateRes(i,v){bets[i].rs=v;bets[i].pnl=v==='성공'?bets[i].rt-bets[i].bt:v==='실패'?-bets[i].bt:0;localStorage.setItem('lck_v2',JSON.stringify(bets));renderBetting();}
-function updateRet(i,v){bets[i].rt=parseFloat(v)||0;if(bets[i].rs==='성공')bets[i].pnl=bets[i].rt-bets[i].bt;localStorage.setItem('lck_v2',JSON.stringify(bets));renderBetting();}
-function delBet(i){if(confirm('삭제?')){bets.splice(i,1);localStorage.setItem('lck_v2',JSON.stringify(bets));renderBetting();}}
+async function updateRes(i,v){
+  bets[i].rs=v;bets[i].pnl=v==='성공'?bets[i].rt-bets[i].bt:v==='실패'?-bets[i].bt:0;
+  await dbUpdate('bets',bets[i].id,{rs:bets[i].rs,pnl:bets[i].pnl});
+  renderBetting();
+}
+async function updateRet(i,v){
+  bets[i].rt=parseFloat(v)||0;
+  if(bets[i].rs==='성공')bets[i].pnl=bets[i].rt-bets[i].bt;
+  await dbUpdate('bets',bets[i].id,{rt:bets[i].rt,pnl:bets[i].pnl});
+  renderBetting();
+}
+async function delBet(i){
+  if(confirm('삭제?')){
+    await dbDelete('bets',bets[i].id);
+    bets=await dbGet('bets');
+    renderBetting();
+  }
+}
 
 function updateBudget(){
   const l=parseFloat(document.getElementById('b-inp-living').value);
